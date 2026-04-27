@@ -1,5 +1,6 @@
 import {Application, type Renderer} from "pixi.js";
 import {GAME_CONFIG} from "../config/constants.ts";
+import {Loader} from "../config/Loader.ts";
 
 export class App {
     private app: Application<Renderer>;
@@ -13,6 +14,11 @@ export class App {
             height: GAME_CONFIG.HEIGHT,
             backgroundColor: '#0c0c1e'
         });
+
+
+        await Loader.load(() => {
+
+        })
 
         document.body.appendChild(this.app.canvas);
     }
