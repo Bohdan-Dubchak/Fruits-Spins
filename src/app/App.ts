@@ -1,9 +1,11 @@
-import {Application, type Renderer} from "pixi.js";
+import {Application, Container, type Renderer} from "pixi.js";
 import {GAME_CONFIG} from "../config/constants.ts";
 import {Loader} from "../config/Loader.ts";
+import {GameScene} from "../scene/GameScene.ts";
 
 export class App {
     private app: Application<Renderer>;
+    private currentScene: Container | null = null;
     constructor() {
         this.app = new Application();
     }
@@ -15,12 +17,27 @@ export class App {
             backgroundColor: '#0c0c1e'
         });
 
+        document.body.appendChild(this.app.canvas);
 
         await Loader.load(() => {
-
+            this.startGame();
         })
 
-        document.body.appendChild(this.app.canvas);
+    }
+
+    private startGame(): void {
+        this.clearScene();
+
+        const gameScene = new GameScene();
+        this.currentScene = gameScene;
+
+        this.app.stage.addChild(gameScene);
+    }
+
+    private clearScene(): void {
+        if (this.currentScene) {
+            this.app.stage.removeChild(this.currentScene);
+        }
     }
 
     get stage() {
