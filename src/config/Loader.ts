@@ -2,14 +2,15 @@ import {Assets} from "pixi.js";
 
 export class Loader {
     public static async load(onProgress?: (progress: number) => void): Promise<void> {
-        const assets: string[] = [
-            '/public/assets/symbols/bell.png',
-            '/public/assets/symbols/cherry.png',
-            '/public/assets/symbols/grapes.png',
-            '/public/assets/symbols/lemon.png',
-            '/public/assets/symbols/orange.png',
-            '/public/assets/symbols/plum.png',
-            '/public/assets/symbols/seven.png',
+        const assets = [
+            {alias: 'bell', src: '/assets/symbols/bell.png'},
+            {alias: 'cherry', src: '/assets/symbols/cherry.png'},
+            {alias: 'grapes', src: '/assets/symbols/grapes.png'},
+
+            // {alias: 'lemon', src: '/assets/symbols/lemon.png'},
+            // {alias: 'orange', src: '/assets/symbols/orange.png'},
+            // {alias: 'plum', src: '/assets/symbols/plum.png'},
+            // {alias: 'seven', src: '/assets/symbols/seven.png'},
         ];
 
         let loaded: number = 0;
@@ -20,7 +21,7 @@ export class Loader {
 
                 loaded++;
 
-                const progress = loaded / asset.length;
+                const progress = loaded / assets.length;
 
                 await new Promise(res => setTimeout(res, 200));
 
