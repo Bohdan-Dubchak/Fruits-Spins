@@ -7,17 +7,19 @@ export class Loader {
             {alias: 'cherry', src: '/assets/symbols/cherry.png'},
             {alias: 'grapes', src: '/assets/symbols/grapes.png'},
 
-            // {alias: 'lemon', src: '/assets/symbols/lemon.png'},
-            // {alias: 'orange', src: '/assets/symbols/orange.png'},
-            // {alias: 'plum', src: '/assets/symbols/plum.png'},
-            // {alias: 'seven', src: '/assets/symbols/seven.png'},
+            {alias: 'lemon', src: '/assets/symbols/lemon.png'},
+            {alias: 'orange', src: '/assets/symbols/orange.png'},
+            {alias: 'plum', src: '/assets/symbols/plum.png'},
+            {alias: 'seven', src: '/assets/symbols/seven.png'},
         ];
+
+        Assets.add(assets);
 
         let loaded: number = 0;
 
         for (const asset of assets) {
             try {
-                await Assets.load(asset);
+                await Assets.load(asset.alias);
 
                 loaded++;
 
