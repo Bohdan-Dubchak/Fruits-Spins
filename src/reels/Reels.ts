@@ -137,8 +137,21 @@ export class Reel extends Container {
         }
 
         if (this.targetSpeed === 0 && this.speed < 0.5) {
+            this.snapToGrid();
             this.speed = 0;
             this.isSpinning = false;
+        }
+    }
+
+    private snapToGrid(): void {
+        for (const symbol of this.symbols) {
+            const remainder = symbol.y % this.symbolSize;
+
+            symbol.y -= remainder;
+
+            if (remainder > this.symbolSize / 2) {
+                symbol.y += this.symbolSize;
+            }
         }
     }
 
