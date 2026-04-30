@@ -14,6 +14,7 @@ export class ReelContainer extends Container {
         this.createReel()
     }
 
+    // Створення барабана
     private createReel(): void {
         for (let i = 0; i < this.reelCount; i++) {
             const reel = new Reel();
@@ -25,7 +26,35 @@ export class ReelContainer extends Container {
             this.reels.push(reel);
 
             this.addChild(reel);
-
         }
+    }
+
+    public isAnySpinning(): boolean {
+        return this.reels.some(reel => reel.getIsSpinning());
+    }
+
+    // Запуск всіх барабанів
+    public spinAll(callback: () => void) {
+        let stoppedCount = 0;
+
+        this.reels.forEach((reel, index) => {
+            reel.spin();
+
+            setTimeout(() => {
+                reel.stop();
+                stoppedCount++;
+
+                if (stoppedCount === this.reels.length) {
+                    setTimeout(() => {
+                        callback();
+                    }, 300);
+                }
+            }, 1500 + index * 500);
+        });
+    }
+
+    // Повертає масив усіх барабанів
+    public getReels(): Reel[] {
+    return this.reels;
     }
 }
