@@ -1,4 +1,4 @@
-import {Assets, Container,  Sprite, Texture} from "pixi.js";
+import {Assets, Container,  Sprite, Texture, Ticker} from "pixi.js";
 
 type SymbolDate = {
     id: string;
@@ -14,6 +14,10 @@ export class Reel extends Container {
 
     private symbolsContainer: Container;
 
+    private speed = 0;
+    private targetSpeed = 0;
+    private isSpinning = false;
+
     constructor() {
         super();
 
@@ -24,6 +28,8 @@ export class Reel extends Container {
     public init(): void {
         this.loadTextures();
         this.createSymbols();
+
+        Ticker.shared.add(this.update, this);
     }
 
     // Завантажує текстури всіх символів з Assets
@@ -75,9 +81,55 @@ export class Reel extends Container {
 
             this.symbols.push(sprite);
             this.symbolsContainer.addChild(sprite);
-
-
         }
     }
+
+    // Встановлює цільову швидкість для плавного старту, запуск
+    public spin(): void {
+        if (this.isSpinning) return
+
+        this.isSpinning = true;
+        this.speed = 0;
+        this.targetSpeed = 10;
+    }
+
+    // Зупиняє барабан
+    public stop(): void {
+        this.targetSpeed = 0;
+    }
+
+    // Перевіряємо чи барабан крутиться
+    public getIsSpinning(): boolean {
+        return this.isSpinning;
+    }
+
+
+    // Цикл анімації швидкості
+    private update(): void {
+
+        if (this.speed < this.targetSpeed) {
+            this.speed += 0.5;
+        } else if (this.speed > this.targetSpeed) {
+            this.speed -= 0.5;
+        }
+
+        for (const symbol of this.symbols) {
+            symbol.y += this.speed;
+
+            if (symbol.y >= this.symbolSize * this.symbols.length) {
+                symbol.y -= this.symbolSize * this.symbols.length;
+
+                const {id, texture} = this.getRandomSymbol();
+                symbol.texture = texture;
+                (symbol as any).symbolId = id;
+            }
+        }
+
+        if (this.targetSpeed === 0 && this.speed < 0.5) {
+            this.speed = 0;
+            this.isSpinning = false;
+        }
+    }
+
 
 }
