@@ -2,7 +2,7 @@ import {Container} from "pixi.js";
 import {ReelContainer} from "../reels/ReelsContainer.ts";
 
 export class GameScene extends Container {
-    private reelsContainer = new Container();
+    private reelsContainer!: Container;
     // private uiContainer = new Container();
 
     constructor() {
@@ -17,8 +17,8 @@ export class GameScene extends Container {
     }
 
     private createReels(): void {
-        this.reelsContainer = new ReelContainer(3);
-        this.reelsContainer.position.set(200, 50);
+        this.reelsContainer = new ReelContainer(5);
+        this.reelsContainer.position.set(150, 50);
 
         this.addChild(this.reelsContainer);
     }
