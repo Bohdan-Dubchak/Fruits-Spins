@@ -1,4 +1,4 @@
-import {Assets, Container,  Sprite, Texture, Ticker} from "pixi.js";
+import {Assets, Container,  Sprite, Texture, Ticker, Graphics} from "pixi.js";
 
 type SymbolDate = {
     id: string;
@@ -10,7 +10,7 @@ export class Reel extends Container {
     private symbolMap: SymbolDate[] = [];
 
     private symbolSize = 110;
-    // private reelHeight = 330;
+    private reelHeight = 330;
 
     private symbolsContainer: Container;
 
@@ -23,13 +23,24 @@ export class Reel extends Container {
 
         this.symbolsContainer = new Container();
         this.addChild(this.symbolsContainer);
+
     }
 
     public init(): void {
         this.loadTextures();
         this.createSymbols();
+        this.createMask();
 
         Ticker.shared.add(this.update, this);
+    }
+
+    private createMask(): void {
+        const mask = new Graphics();
+        mask.rect(0, 0, this.symbolSize, this.reelHeight);
+        mask.fill(0xffffff);
+
+        this.addChild(mask);
+        this.symbolsContainer.mask = mask;
     }
 
     // Завантажує текстури всіх символів з Assets
@@ -68,7 +79,7 @@ export class Reel extends Container {
     // Створює початковий набір з 5 символів для барабана
     // 5 символів потрібно для безперервної прокрутки (3 видимі + 2 буферні)
     private createSymbols(): void {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
             const {id, texture} = this.getRandomSymbol()
 
             const sprite = new Sprite(texture);
