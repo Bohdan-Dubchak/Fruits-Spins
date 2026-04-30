@@ -19,7 +19,9 @@ export class Reel extends Container {
 
         this.symbolsContainer = new Container();
         this.addChild(this.symbolsContainer);
+    }
 
+    public init(): void {
         this.loadTextures();
         this.createSymbols();
     }
@@ -31,12 +33,23 @@ export class Reel extends Container {
             {id: 'cherry', texture: Assets.get("cherry")},
             {id: 'grapes', texture: Assets.get("grapes")},
 
-            // {id: 'lemon', texture: Assets.get("lemon")},
-            // {id: 'orange', texture: Assets.get("orange")},
-            // {id: 'plum', texture: Assets.get("plum")},
-            // {id: 'seven', texture: Assets.get("seven")},
+            {id: 'lemon', texture: Assets.get("lemon")},
+            {id: 'orange', texture: Assets.get("orange")},
+            {id: 'plum', texture: Assets.get("plum")},
+            {id: 'seven', texture: Assets.get("seven")},
 
         ]
+    }
+
+    // @ts-ignore
+    private getTexture(id: string): Texture {
+        const texture = Assets.get(id);
+
+        if (!texture) {
+            throw new Error(`Texture id ${id} not found`);
+        }
+
+        return texture as Texture;
     }
 
 
@@ -68,8 +81,3 @@ export class Reel extends Container {
     }
 
 }
-
-/**
- * нам треба вивисти 3 смволи
- * правильно відтворити
- */

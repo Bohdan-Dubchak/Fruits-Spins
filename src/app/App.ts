@@ -6,6 +6,7 @@ import {GameScene} from "../scene/GameScene.ts";
 export class App {
     private app: Application<Renderer>;
     private currentScene: Container | null = null;
+
     constructor() {
         this.app = new Application();
     }
@@ -19,9 +20,10 @@ export class App {
 
         document.body.appendChild(this.app.canvas);
 
-        await Loader.load(() => {
-            this.startGame();
-        })
+        await Loader.load();
+
+        this.startGame();
+
 
     }
 
