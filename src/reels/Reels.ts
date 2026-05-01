@@ -143,6 +143,7 @@ export class Reel extends Container {
         }
     }
 
+    // Вирівнює всі символи по сітці після зупинки
     private snapToGrid(): void {
         for (const symbol of this.symbols) {
             const remainder = symbol.y % this.symbolSize;
@@ -153,6 +154,25 @@ export class Reel extends Container {
                 symbol.y += this.symbolSize;
             }
         }
+    }
+
+    //  Повертає ID середнього видимого символа (row 1)
+    public getMiddleSymbol(): string {
+        const targetY = this.symbolSize;
+
+        let closest = this.symbols[0];
+        let minDiff = Infinity;
+
+        for (const symbol of this.symbols) {
+            const diff = Math.abs(closest.y - targetY);
+
+            if (diff < minDiff) {
+                minDiff = diff;
+                closest = symbol;
+            }
+        }
+
+        return (closest as any).symbolId;
     }
 
 
