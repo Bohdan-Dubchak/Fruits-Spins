@@ -87,35 +87,53 @@ export class GameScene extends Container {
 
             console.log(`Лінія ${lineIndex + 1}:`, symbols);
 
-            const firstSymbol = symbols[0];
+            const wins = this.checkLine(symbols);
 
-            // рахуємо скільки однакових підряд зліва
-            let count = 1;
+            wins.forEach(win => {
 
-            for (let i = 1; i < symbols.length; i++) {
-                if (symbols[i] === firstSymbol) {
-                    count++;
-                } else {
-                    break;
-                }
-            }
+                const winAmount = this.payTable[win.symbol]?.[win.count] || 0;
 
-            // мінімум 3 для виграшу
-            if (count >= 3) {
-
-                const win = this.payTable[firstSymbol]?.[count] || 0;
-
-                totalWin += win;
+                totalWin += winAmount;
 
                 console.log(
                     `🎉 Виграш!`,
-                    `Символ: ${firstSymbol}`,
-                    `Кількість: ${count}`,
-                    `Сума: ${win}`
+                    `Символ: ${win.symbol}`,
+                    `Довжина: ${win.count}`,
+                    `Сума: ${winAmount}`
                 );
-            }
+            });
         });
 
         console.log("💰 Загальний виграш:", totalWin);
+    }
+
+    private checkLine(symbols: string[]): { symbol: string, count: number }[] {
+
+        const results: { symbol: string, count: number }[] = [];
+
+        let current = symbols[0];
+        let count = 1;
+
+        for (let i = 1; i < symbols.length; i++) {
+
+            if (symbols[i] === current) {
+                count++;
+            } else {
+
+                if (count >= 3) {
+                    results.push({ symbol: current, count });
+                }
+
+                current = symbols[i];
+                count = 1;
+            }
+        }
+
+        // остання група
+        if (count >= 3) {
+            results.push({ symbol: current, count });
+        }
+
+        return results;
     }
 }
