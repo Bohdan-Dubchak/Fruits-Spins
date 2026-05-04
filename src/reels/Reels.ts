@@ -164,7 +164,7 @@ export class Reel extends Container {
         let minDiff = Infinity;
 
         for (const symbol of this.symbols) {
-            const diff = Math.abs(closest.y - targetY);
+            const diff = Math.abs(symbol.y - targetY);
 
             if (diff < minDiff) {
                 minDiff = diff;
@@ -173,6 +173,29 @@ export class Reel extends Container {
         }
 
         return (closest as any).symbolId;
+    }
+// Повертає масив Sprite об'єктів всіх 3 видимих символів
+    public getVisibleSymbolsSprites(): Sprite[] {
+        // Повертає три спрайти по центру (видимий ряд)
+        const result: Sprite[] = [];
+        for (let row = 0; row < 3; row++) {
+            const targetY = row * this.symbolSize;
+            let closest = this.symbols[0];
+            let minDiff = Infinity;
+
+            for (const symbol of this.symbols) {
+                const diff = Math.abs(symbol.y - targetY);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = symbol;
+                }
+            }
+
+            result.push(closest);
+
+        }
+
+        return result;
     }
 
 
