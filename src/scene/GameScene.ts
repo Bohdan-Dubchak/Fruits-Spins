@@ -54,22 +54,20 @@ export class GameScene extends Container {
     }
 
     // Опис відповідностей
-    private payTable: Record<string, number> = {
-        bell: 2,
-        cherry: 2,
-        grapes: 2,
-        lemon: 2,
-        orange: 2,
-        plum: 2,
-        seven: 2,
+    private payTable:  Record<string, Record<number, number>> = {
+        bell:   { 3: 7, 4: 25, 5: 100 },
+        cherry: { 3: 5, 4: 20, 5: 40 },
+        grapes: { 3: 25, 4: 50, 5: 100 },
+        lemon:  { 3: 5, 4: 20, 5: 40 },
+        orange: { 3: 5, 4: 25, 5: 50 },
+        plum:   { 3: 15, 4: 25, 5: 50 },
+        seven:  { 3: 200, 4: 500, 5: 2500 },
     };
 
     // Виграш
     private checkWin(): void {
 
         const reels = this.reelsContainer.getReels();
-
-        // Матриця спрайтів
         const matrix = reels.map((reel) => reel.getVisibleSymbolsSprites());
 
         const payLines = [
@@ -82,33 +80,42 @@ export class GameScene extends Container {
 
         payLines.forEach((line, lineIndex) => {
 
-            // Отримуємо symbolType замість Sprite
             const symbols = line.map((row, reelIndex) => {
-
                 const sprite = matrix[reelIndex][row];
-
                 return (sprite as any).symbolId;
             });
 
             console.log(`Лінія ${lineIndex + 1}:`, symbols);
 
-            // Всі символи однакові?
-            const isWin = symbols.every(symbol => symbol === symbols[0]);
+            const firstSymbol = symbols[0];
 
-            if (isWin) {
+            // рахуємо скільки однакових підряд зліва
+            let count = 1;
 
-                const multiplier = this.payTable[symbols[0]] || 0;
+            for (let i = 1; i < symbols.length; i++) {
+                if (symbols[i] === firstSymbol) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
 
-                totalWin += multiplier;
+            // мінімум 3 для виграшу
+            if (count >= 3) {
+
+                const win = this.payTable[firstSymbol]?.[count] || 0;
+
+                totalWin += win;
 
                 console.log(
-                    `🎉 Виграш на лінії ${lineIndex + 1}!`,
-                    `Символ: ${symbols[0]}`,
-                    `Виграш: ${multiplier}`
+                    `🎉 Виграш!`,
+                    `Символ: ${firstSymbol}`,
+                    `Кількість: ${count}`,
+                    `Сума: ${win}`
                 );
             }
         });
 
-        console.log("Загальний виграш:", totalWin);
+        console.log("💰 Загальний виграш:", totalWin);
     }
 }
