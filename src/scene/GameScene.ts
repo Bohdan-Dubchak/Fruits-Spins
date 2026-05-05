@@ -4,6 +4,7 @@ import {SpinButton} from "../ui/spinButton.ts";
 import {GAME_CONFIG} from "../config/constants.ts";
 import {payLines, payTable} from "../config/paylines.ts";
 import {WinCalculator} from "../game/engine/WinCalculator.ts";
+import {AutoSpin} from "../ui/autoSpinBtn.ts";
 
 export class GameScene extends Container {
     private reelsContainer!: ReelContainer;
@@ -52,8 +53,14 @@ export class GameScene extends Container {
             });
         });
 
-        spinButton.position.set(50, 50);
-        this.addChild(spinButton);
+
+        // AutoSpin
+        const autoSpin = new AutoSpin(() => {
+
+        })
+
+        // this.addChild(autoSpin);
+        this.addChild(spinButton, autoSpin);
     }
 
     // Виграш
