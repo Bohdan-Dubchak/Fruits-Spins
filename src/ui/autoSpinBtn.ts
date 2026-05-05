@@ -1,7 +1,7 @@
-import {Container, Assets, Sprite, Rectangle} from "pixi.js";
-import { gsap } from "gsap";
+import {Assets, Container, Rectangle, Sprite} from "pixi.js";
+import {gsap} from "gsap";
 
-export class SpinButton extends Container {
+export class AutoSpin extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
 
@@ -9,16 +9,15 @@ export class SpinButton extends Container {
         super();
 
         this.eventMode = 'static';
-        this.cursor = 'pointer';
+        this.cursor = "pointer";
 
-        const texture = Assets.get('spinButton');
+        const texture = Assets.get('autoSpin');
         const bg = new Sprite(texture);
 
         bg.anchor.set(0.5);
-        bg.position.set(870, 540);
-        bg.width = 150;
-        bg.height = 80;
-
+        bg.position.set(741, 546);
+        bg.width = 89.9;
+        bg.height = 66;
 
         this.originalScaleX = bg.scale.x;
         this.originalScaleY = bg.scale.y;
@@ -61,5 +60,6 @@ export class SpinButton extends Container {
                 duration: 0.2
             });
         }, { once: true });
+
     }
 }
