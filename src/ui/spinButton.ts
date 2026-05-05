@@ -1,6 +1,10 @@
-import {Container, Assets, Sprite} from "pixi.js";
+import {Container, Assets, Sprite, Rectangle} from "pixi.js";
+import { gsap } from "gsap";
 
 export class SpinButton extends Container {
+    private originalScaleX: number;
+    private originalScaleY: number;
+
     constructor(onClick: () => void) {
         super();
 
@@ -10,15 +14,52 @@ export class SpinButton extends Container {
         const texture = Assets.get('spinButton');
         const bg = new Sprite(texture);
 
-        bg.width = 100;
-        bg.height = 50;
+        bg.anchor.set(0.5);
+        bg.position.set(870, 540);
+        bg.width = 150;
+        bg.height = 80;
+
+
+        this.originalScaleX = bg.scale.x;
+        this.originalScaleY = bg.scale.y;
 
         this.addChild(bg);
 
-
+        this.hitArea = new Rectangle(
+            bg.x - bg.width / 2,
+            bg.y - bg.height / 2,
+            bg.width,
+            bg.height
+        );
 
         this.on('pointerdown', () => {
+            gsap.killTweensOf(bg.scale);
+            gsap.to(bg.scale, {
+                x: this.originalScaleX * 0.95,
+                y: this.originalScaleY * 0.95,
+                duration: 0.08,
+                ease: "power2.out"
+            });
             onClick();
-        })
+        }, { once: true });
+
+        this.on('pointerup', () => {
+            gsap.killTweensOf(bg.scale);
+            gsap.to(bg.scale, {
+                x: this.originalScaleX,
+                y: this.originalScaleY,
+                duration: 0.2,
+                ease: "back.out(4)"
+            });
+        }, { once: true });
+
+        this.on('pointerout', () => {
+            gsap.killTweensOf(bg.scale);
+            gsap.to(bg.scale, {
+                x: this.originalScaleX,
+                y: this.originalScaleY,
+                duration: 0.2
+            });
+        }, { once: true });
     }
 }
