@@ -13,6 +13,8 @@ export class Loader {
             {alias: 'backFon', src: '/assets/Fons/backFon.png'},
             {alias: 'spinButton', src: '/assets/button/spinButton.png'},
             {alias: 'autoSpin', src: '/assets/button/autoSpin.png'},
+            {alias: 'plus', src: '/assets/button/plus.png'},
+            {alias: 'minus', src: '/assets/button/minus.png'},
         ];
 
         Assets.add(assets);
