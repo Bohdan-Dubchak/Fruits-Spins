@@ -9,8 +9,8 @@ export class Reel extends Container {
     private symbols: Sprite[] = [];
     private symbolMap: SymbolDate[] = [];
 
-    private symbolSize = 110;
-    private reelHeight = 330;
+    private symbolSize = 123;
+    private reelHeight = 369;
 
     private symbolsContainer: Container;
 
@@ -49,7 +49,6 @@ export class Reel extends Container {
             {id: 'bell', texture: Assets.get("bell")},
             {id: 'cherry', texture: Assets.get("cherry")},
             {id: 'grapes', texture: Assets.get("grapes")},
-
             {id: 'lemon', texture: Assets.get("lemon")},
             {id: 'orange', texture: Assets.get("orange")},
             {id: 'plum', texture: Assets.get("plum")},
@@ -101,7 +100,7 @@ export class Reel extends Container {
 
         this.isSpinning = true;
         this.speed = 0;
-        this.targetSpeed = 10;
+        this.targetSpeed = 30;
     }
 
     // Зупиняє барабан
