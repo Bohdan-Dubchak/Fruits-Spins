@@ -58,6 +58,7 @@ export class GameScene extends Container {
 
     private createUI(): void {
         let interval: ReturnType<typeof setInterval> | null = null;
+        let isCheckingWin = false;
 
         const stop = () => {
             if (interval) {
@@ -72,6 +73,8 @@ export class GameScene extends Container {
 
             if (!this.wallet.canSpin()) return;
 
+            if (isCheckingWin) return;
+
             this.wallet.spendBet();
 
             this.hud.updateBalance(
@@ -82,7 +85,17 @@ export class GameScene extends Container {
             this.hud.updateBet( this.wallet.getBet());
 
             this.reelsContainer.spinAll(() => {
+                // Перевіряємо що барабани дійсно зупинилися
+                if (this.reelsContainer.isAnySpinning()) {
+                    console.log("Reels still spinning, skipping win check");
+                    return;
+                }
+
+                if (isCheckingWin) return;
+
+                isCheckingWin = true;
                 this.checkWin();
+                isCheckingWin = false;
             });
         });
 
