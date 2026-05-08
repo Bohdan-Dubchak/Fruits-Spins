@@ -53,25 +53,24 @@ export class WinCalculator {
 
         const results: { symbol: string, count: number }[] = [];
 
-        for (let i = 0; i < symbols.length; i++) {
-
+        // Перевіряємо з кожної позиції
+        for (let s = 0; s <= symbols.length - 3; s++) {
+            const symbol = symbols[s];
             let count = 1;
 
-            for (let j = i + 1; j < symbols.length; j++) {
-
-                if (symbols[j] === symbols[i]) {
+            // Рахуємо послідовні однакові символи
+            for (let i = s + 1; i < symbols.length; i++) {
+                if (symbols[i] === symbol) {
                     count++;
                 } else {
                     break;
                 }
             }
 
+            // Якщо знайшли 3 або більше - додаємо
             if (count >= 3) {
-
-                results.push({
-                    symbol: symbols[i],
-                    count,
-                });
+                results.push({symbol, count});
+                break; // Беремо першу знайдену комбінацію
             }
         }
 
