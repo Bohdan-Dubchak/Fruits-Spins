@@ -49,7 +49,7 @@ export class GameScene extends Container {
     private createReels(): void {
         this.reelsContainer = new ReelContainer(5);
 
-        this.reelsContainer.position.set(140, 62);
+        this.reelsContainer.position.set(165, 80);
 
         this.addChild(this.reelsContainer);
     }
