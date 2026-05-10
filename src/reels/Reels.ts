@@ -9,8 +9,8 @@ export class Reel extends Container {
     private symbols: Sprite[] = [];
     private symbolMap: SymbolDate[] = [];
 
-    private symbolSize = 123;
-    private reelHeight = 369;
+    private symbolSize = 117;
+    private reelHeight = 352;
 
     private symbolsContainer: Container;
 
