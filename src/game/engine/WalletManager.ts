@@ -3,73 +3,57 @@ export class WalletManager {
     private bet: number;
     private readonly MIN_BET: number;
 
-    constructor(initialBalance: number = 100, initialBet: number = 5, minBet: number = 5) {
+    constructor(initialBalance = 100, initialBet = 5, minBet = 5) {
         this.balance = initialBalance;
         this.bet = initialBet;
-
         this.MIN_BET = minBet;
 
         this.clampBet();
     }
 
-    public getBalance(): number {
+    getBalance(): number {
         return this.balance;
     }
 
-    public getBet(): number {
+    getBet(): number {
         return this.bet;
     }
 
-    public getMinBet(): number {
+    getMinBet(): number {
         return this.MIN_BET;
     }
 
-    public increaseBet(step: number = 5): void {
-        if (this.balance < this.MIN_BET) return;
-
+    increaseBet(step = 5): void {
         this.bet += step;
-
         this.clampBet();
     }
 
-    public decreaseBet(step: number = 5): void {
-        if (this.balance < this.MIN_BET) return;
-
+    decreaseBet(step = 5): void {
         this.bet -= step;
-
         this.clampBet();
     }
 
     private clampBet(): void {
-        if (this.balance < this.MIN_BET) {
-            this.bet = 0;
-            return;
-        }
+        const maxBet = this.balance;
 
-        this.bet = Math.min(Math.max(this.bet, this.MIN_BET), this.balance);
+        this.bet = Math.max(this.MIN_BET, Math.min(this.bet, maxBet));
     }
 
-    public canSpin(): boolean {
-        return (this.balance >= this.MIN_BET && this.bet > 0 && this.balance >= this.bet);
+    canSpin(): boolean {
+        return this.balance >= this.bet && this.bet >= this.MIN_BET;
     }
 
-    public spendBet(): boolean {
-        if (!this.canSpin()) {
-            return false;
-        }
+    spendBet(): boolean {
+        if (!this.canSpin()) return false;
 
         this.balance -= this.bet;
-
-        this.clampBet();
-
         return true;
     }
 
-    public addWin(amount:number): void {
+    addWin(amount: number): void {
         if (amount <= 0) return;
 
         this.balance += amount;
-
         this.clampBet();
     }
 }

@@ -8,28 +8,33 @@ import { AutoSpin } from "../ui/autoSpinBtn.ts";
 import { PlusBet } from "../ui/plusButton.ts";
 import { HUD } from "../ui/HUD.ts";
 import { MinusButton } from "../ui/minusButton.ts";
-import {WalletManager} from "../game/engine/WalletManager.ts";
+import { WalletManager } from "../game/engine/WalletManager.ts";
 
 export class GameScene extends Container {
     private reelsContainer!: ReelContainer;
+    private hud!: HUD;
+
+    private wallet = new WalletManager();
 
     private payTable: Record<string, Record<number, number>> = payTable;
 
-    private hud!: HUD;
+    private isAutoSpun: boolean = false;
+    private isCheckingWin: boolean = false;
 
     constructor() {
         super();
-
         this.init();
     }
 
     private async init(): Promise<void> {
         this.createBackgroundImage();
-
         this.createReels();
 
-        // HUD створюємо ДО createUI
-        this.hud = new HUD(this.wallet.getBalance(), this.wallet.getBet());
+        this.hud = new HUD(
+            this.wallet.getBalance(),
+            this.wallet.getBet()
+        );
+
         this.addChild(this.hud);
 
         this.createUI();
@@ -37,7 +42,6 @@ export class GameScene extends Container {
 
     private createBackgroundImage(): void {
         const texture = Assets.get("/assets/Fons/backFon.png");
-
         const sprite = new Sprite(texture);
 
         sprite.width = GAME_CONFIG.WIDTH;
@@ -48,17 +52,47 @@ export class GameScene extends Container {
 
     private createReels(): void {
         this.reelsContainer = new ReelContainer(5);
-
         this.reelsContainer.position.set(165, 80);
 
         this.addChild(this.reelsContainer);
     }
 
-    private wallet = new WalletManager();
+    //  Spin logic
+    private startSpin(): void {
+        if (this.reelsContainer.isAnySpinning()) return;
+
+        if (!this.wallet.canSpin()) {
+            this.isAutoSpun = false;
+            return;
+        }
+
+        if (this.isCheckingWin) return;
+
+        this.wallet.spendBet();
+
+        this.hud.updateBalance(this.wallet.getBalance());
+        this.hud.updateBet(this.wallet.getBet());
+
+        this.reelsContainer.spinAll(() => {
+            if (this.reelsContainer.isAnySpinning()) return;
+
+            this.isCheckingWin = true;
+
+            this.checkWin();
+
+            this.isCheckingWin = false;
+
+            // Auto spin loop
+            if (this.isAutoSpun) {
+                setTimeout(() => {
+                    this.startSpin();
+                }, 500);
+            }
+        });
+    }
 
     private createUI(): void {
         let interval: ReturnType<typeof setInterval> | null = null;
-        let isCheckingWin = false;
 
         const stop = () => {
             if (interval) {
@@ -67,46 +101,22 @@ export class GameScene extends Container {
             }
         };
 
-        // Spin
+        //  Spin
         const spinButton = new SpinButton(() => {
-            if (this.reelsContainer.isAnySpinning()) return;
-
-            if (!this.wallet.canSpin()) return;
-
-            if (isCheckingWin) return;
-
-            this.wallet.spendBet();
-
-            this.hud.updateBalance(
-                this.wallet.getBalance()
-            );
-
-            this.hud.updateBalance( this.wallet.getBalance());
-            this.hud.updateBet( this.wallet.getBet());
-
-            this.reelsContainer.spinAll(() => {
-                // Перевіряємо що барабани дійсно зупинилися
-                if (this.reelsContainer.isAnySpinning()) {
-                    console.log("Reels still spinning, skipping win check");
-                    return;
-                }
-
-                if (isCheckingWin) return;
-
-                isCheckingWin = true;
-                this.checkWin();
-                isCheckingWin = false;
-            });
+            this.startSpin();
         });
 
-        // AutoSpin
+        // Auto spin
         const autoSpin = new AutoSpin(() => {
+            this.isAutoSpun = !this.isAutoSpun;
 
+            if (this.isAutoSpun) {
+                this.startSpin();
+            }
         });
 
         const plusButton = new PlusBet(() => {
             this.wallet.increaseBet();
-
             this.hud.updateBet(this.wallet.getBet());
         });
 
@@ -115,9 +125,7 @@ export class GameScene extends Container {
 
             interval = setInterval(() => {
                 this.wallet.increaseBet();
-
                 this.hud.updateBet(this.wallet.getBet());
-
             }, 190);
         });
 
@@ -126,7 +134,6 @@ export class GameScene extends Container {
 
         const minusButton = new MinusButton(() => {
             this.wallet.decreaseBet();
-
             this.hud.updateBet(this.wallet.getBet());
         });
 
@@ -135,15 +142,12 @@ export class GameScene extends Container {
 
             interval = setInterval(() => {
                 this.wallet.decreaseBet();
-
                 this.hud.updateBet(this.wallet.getBet());
-
             }, 190);
         });
 
         minusButton.on("pointerup", stop);
         minusButton.on("pointerupoutside", stop);
-
 
         this.addChild(spinButton, autoSpin, plusButton, minusButton);
     }
@@ -160,7 +164,6 @@ export class GameScene extends Container {
         const result = WinCalculator.calculate(matrix, payLines, this.payTable);
 
         result.wins.forEach(win => {
-
             console.log(
                 `🎉 Line ${win.lineIndex + 1}`,
                 `Symbol: ${win.symbol}`,
@@ -171,10 +174,10 @@ export class GameScene extends Container {
 
         console.log("💰 TOTAL:", result.totalWin);
 
-        // Додаємо виграш до балансу
         if (result.totalWin > 0) {
-
             this.wallet.addWin(result.totalWin);
+
+            this.hud.updateBalance(this.wallet.getBalance());
         }
     }
 }
