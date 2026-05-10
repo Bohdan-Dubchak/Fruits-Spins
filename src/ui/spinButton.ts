@@ -32,16 +32,35 @@ export class SpinButton extends Container {
             bg.height
         );
 
-        this.on('pointerdown', () => {
+        const pressButton = () => {
             gsap.killTweensOf(bg.scale);
-            gsap.to(bg.scale, {
+
+            const tl = gsap.timeline();
+
+            tl.to(bg.scale, {
                 x: this.originalScaleX * 0.95,
                 y: this.originalScaleY * 0.95,
                 duration: 0.08,
                 ease: "power2.out"
             });
+
+            tl.to(bg.scale, {
+                x: this.originalScaleX,
+                y: this.originalScaleY,
+                duration: 0.12,
+                ease: "back.out(4)"
+            });
+
             onClick();
-        }, { once: true });
+        };
+
+        this.on('pointerdown', pressButton);
+
+        window.addEventListener("keydown", (e) => {
+            if ((e.code === "Space") && !e.repeat) {
+                pressButton();
+            }
+        });
 
         this.on('pointerup', () => {
             gsap.killTweensOf(bg.scale);
