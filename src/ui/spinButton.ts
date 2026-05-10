@@ -15,8 +15,8 @@ export class SpinButton extends Container {
         const bg = new Sprite(texture);
 
         bg.anchor.set(0.5);
-        bg.position.set(870, 540);
-        bg.width = 150;
+        bg.position.set(883, 541);
+        bg.width = 230;
         bg.height = 80;
 
 

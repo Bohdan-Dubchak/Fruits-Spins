@@ -15,9 +15,14 @@ export class AutoSpin extends Container {
         const bg = new Sprite(texture);
 
         bg.anchor.set(0.5);
-        bg.position.set(741, 546);
-        bg.width = 89.9;
-        bg.height = 66;
+
+        bg.position.set(732, 543);
+
+        const scale = 70 / texture.width;
+
+        bg.scale.set(scale);
+
+        bg.roundPixels = true;
 
         this.originalScaleX = bg.scale.x;
         this.originalScaleY = bg.scale.y;
@@ -50,7 +55,7 @@ export class AutoSpin extends Container {
                 duration: 0.2,
                 ease: "back.out(4)"
             });
-        }, { once: true });
+        });
 
         this.on('pointerout', () => {
             gsap.killTweensOf(bg.scale);
@@ -59,7 +64,7 @@ export class AutoSpin extends Container {
                 y: this.originalScaleY,
                 duration: 0.2
             });
-        }, { once: true });
+        });
 
     }
 }

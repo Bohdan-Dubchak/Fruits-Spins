@@ -14,22 +14,26 @@ export class MinusButton extends Container {
         const texture = Assets.get('minus');
         const bg = new Sprite(texture);
 
+        bg.position.set(378, 540);
         bg.anchor.set(0.5);
-        bg.width = 48;
-        bg.height = 48;
-        bg.position.set(363, 540);
+        {
+            bg.width = 44;
+            bg.height = 47;
+        }
 
         this.originalScaleX = bg.scale.x;
         this.originalScaleY = bg.scale.y;
 
         this.addChild(bg);
 
-        this.hitArea = new Rectangle(
-            bg.x - bg.width / 2,
-            bg.y - bg.height / 2,
-            bg.width,
-            bg.height
-        );
+        {
+            this.hitArea = new Rectangle(
+                bg.x - bg.width / 2,
+                bg.y - bg.height / 2,
+                bg.width,
+                bg.height
+            );
+        }
 
         this.on('pointerdown', () => {
             gsap.killTweensOf(bg.scale);
