@@ -7,7 +7,7 @@ type WinResult = {
 
 export class WinCalculator {
 
-    public static calculate(matrix: string[][], payLines: number[][], payTable: Record<string, Record<number, number>>): {
+    public static calculate(matrix: string[][], bet: number, payLines: number[][], payTable: Record<string, Record<number, number>>): {
         totalWin: number;
         wins: WinResult[];
     } {
@@ -27,7 +27,7 @@ export class WinCalculator {
             lineWins.forEach(win => {
 
                 const amount =
-                    payTable[win.symbol]?.[win.count] || 0;
+                    (payTable[win.symbol]?.[win.count] || 0) * bet;
 
                 if (amount > 0) {
 
