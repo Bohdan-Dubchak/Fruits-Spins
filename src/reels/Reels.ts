@@ -1,4 +1,5 @@
 import {Assets, Container,  Sprite, Texture, Ticker, Graphics} from "pixi.js";
+import {RNG} from "./RNG.ts";
 
 type SymbolDate = {
     id: string;
@@ -18,8 +19,11 @@ export class Reel extends Container {
     private targetSpeed = 0;
     private isSpinning = false;
 
-    constructor() {
+    private rng: RNG;
+
+    constructor(rng: RNG) {
         super();
+        this.rng = rng;
 
         this.symbolsContainer = new Container();
         this.addChild(this.symbolsContainer);
@@ -69,9 +73,9 @@ export class Reel extends Container {
     }
 
 
-    // Повертає випадковий символ з доступних
     private getRandomSymbol(): SymbolDate {
-        const index = Math.floor(Math.random() * this.symbolMap.length);
+        const index = Math.floor(this.rng.next() * this.symbolMap.length);
+
         return this.symbolMap[index];
     }
 
