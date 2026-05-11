@@ -17,8 +17,6 @@ export class GameScene extends Container {
 
     private wallet = new WalletManager();
 
-    private payTable: Record<string, Record<number, number>> = payTable;
-
     private isAutoSpun: boolean = false;
     private isCheckingWin: boolean = false;
 
@@ -165,7 +163,7 @@ export class GameScene extends Container {
             });
         });
 
-        const result = WinCalculator.calculate(matrix, payLines, this.payTable);
+        const result = WinCalculator.calculate(matrix, this.wallet.getBet(), payLines, payTable);
 
         result.wins.forEach(win => {
             console.log(
