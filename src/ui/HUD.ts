@@ -34,8 +34,8 @@ export class HUD extends Container {
         this.balanceValue.anchor.set(0.5);
         this.betValue.anchor.set(0.5);
 
-        this.balanceValue.position.set(158, 551);
-        this.betValue.position.set(502, 541);
+        this.balanceValue.position.set(171, 551);
+        this.betValue.position.set(515, 541);
 
         this.addChild(this.balanceValue, this.betValue);
     }
