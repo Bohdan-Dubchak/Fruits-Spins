@@ -9,6 +9,7 @@ import { PlusBet } from "../ui/plusButton.ts";
 import { HUD } from "../ui/HUD.ts";
 import { MinusButton } from "../ui/minusButton.ts";
 import { WalletManager } from "../game/engine/WalletManager.ts";
+import {RNG} from "../reels/RNG.ts";
 
 export class GameScene extends Container {
     private reelsContainer!: ReelContainer;
@@ -21,8 +22,11 @@ export class GameScene extends Container {
     private isAutoSpun: boolean = false;
     private isCheckingWin: boolean = false;
 
-    constructor() {
+    private rng: RNG;
+
+    constructor(rng: RNG) {
         super();
+        this.rng = rng;
         this.init();
     }
 
@@ -51,7 +55,7 @@ export class GameScene extends Container {
     }
 
     private createReels(): void {
-        this.reelsContainer = new ReelContainer(5);
+        this.reelsContainer = new ReelContainer(5, this.rng);
         this.reelsContainer.position.set(165, 80);
 
         this.addChild(this.reelsContainer);
