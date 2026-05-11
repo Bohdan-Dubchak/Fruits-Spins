@@ -2,6 +2,7 @@ import {Application, Container, type Renderer} from "pixi.js";
 import {GAME_CONFIG} from "../config/constants.ts";
 import {Loader} from "../config/Loader.ts";
 import {GameScene} from "../scene/GameScene.ts";
+import {RNG} from "../reels/RNG.ts";
 
 export class App {
     private app: Application<Renderer>;
@@ -23,16 +24,15 @@ export class App {
         await Loader.load();
 
         this.startGame();
-
-
     }
 
     private startGame(): void {
         this.clearScene();
 
-        const gameScene = new GameScene();
-        this.currentScene = gameScene;
+        const rng = new RNG(Date.now());
+        const gameScene = new GameScene(rng);
 
+        this.currentScene = gameScene;
         this.app.stage.addChild(gameScene);
     }
 
