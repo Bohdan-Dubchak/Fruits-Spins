@@ -9,6 +9,7 @@ import { PlusBet } from "../ui/plusButton.ts";
 import { HUD } from "../ui/HUD.ts";
 import { MinusButton } from "../ui/minusButton.ts";
 import { WalletManager } from "../game/engine/WalletManager.ts";
+import {WinText} from "../ui/WinText.ts";
 import {WinTextAnimation} from "../animations/WinAnimations.ts";
 import {RNG} from "../game/engine/RNG.ts";
 
@@ -21,7 +22,7 @@ export class GameScene extends Container {
     private isAutoSpun: boolean = false;
     private isCheckingWin: boolean = false;
 
-    private winText!: WinTextAnimation;
+    private winText!: WinText;
 
     private rng: RNG;
 
@@ -42,8 +43,8 @@ export class GameScene extends Container {
 
         this.addChild(this.hud);
 
-        this.winText = new WinTextAnimation();
-        this.winText.position.set(400, 40);
+        this.winText = new WinText();
+        this.winText.position.set(GAME_CONFIG.WIDTH / 2, GAME_CONFIG.HEIGHT / 2);
         this.addChild(this.winText);
 
         this.createUI();
@@ -186,8 +187,8 @@ export class GameScene extends Container {
         if (result.totalWin > 0) {
             this.wallet.addWin(result.totalWin);
 
-            this.hud.updateBalance(this.wallet.getBalance());
-            this.winText.show(result.totalWin);
+            this.winText.setAmount(result.totalWin);
+            WinTextAnimation.play(this.winText);
         }
     }
 }
