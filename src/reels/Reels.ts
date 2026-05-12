@@ -1,5 +1,5 @@
 import {Assets, Container,  Sprite, Texture, Ticker, Graphics} from "pixi.js";
-import {RNG} from "./RNG.ts";
+import {RNG} from "../game/engine/RNG.ts";
 
 type SymbolDate = {
     id: string;
