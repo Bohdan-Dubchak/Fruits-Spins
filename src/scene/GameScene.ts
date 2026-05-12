@@ -68,7 +68,7 @@ export class GameScene extends Container {
     }
 
     //  Spin logic
-    private startSpin(): void {
+    private async startSpin(): Promise<void> {
         if (this.reelsContainer.isAnySpinning()) return;
 
         if (!this.wallet.canSpin()) {
@@ -83,7 +83,7 @@ export class GameScene extends Container {
         this.hud.updateBalance(this.wallet.getBalance());
         this.hud.updateBet(this.wallet.getBet());
 
-        this.reelsContainer.spinAll(() => {
+        await this.reelsContainer.spinAll(() => {
             if (this.reelsContainer.isAnySpinning()) return;
 
             this.isCheckingWin = true;
@@ -186,6 +186,8 @@ export class GameScene extends Container {
 
         if (result.totalWin > 0) {
             this.wallet.addWin(result.totalWin);
+
+            this.hud.updateBalance(this.wallet.getBalance());
 
             this.winText.setAmount(result.totalWin);
             WinTextAnimation.play(this.winText);
