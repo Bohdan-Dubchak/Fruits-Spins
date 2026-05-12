@@ -9,7 +9,7 @@ import { PlusBet } from "../ui/plusButton.ts";
 import { HUD } from "../ui/HUD.ts";
 import { MinusButton } from "../ui/minusButton.ts";
 import { WalletManager } from "../game/engine/WalletManager.ts";
-import {RNG} from "../reels/RNG.ts";
+import {RNG} from "../game/engine/RNG.ts";
 
 export class GameScene extends Container {
     private reelsContainer!: ReelContainer;

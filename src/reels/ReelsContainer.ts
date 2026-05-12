@@ -1,6 +1,6 @@
 import {Container} from "pixi.js";
 import {Reel} from "./Reels.ts";
-import {RNG} from "./RNG.ts";
+import {RNG} from "../game/engine/RNG.ts";
 
 export class ReelContainer extends Container {
     private reels: Reel[] = [];
