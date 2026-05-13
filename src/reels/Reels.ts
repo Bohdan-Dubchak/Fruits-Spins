@@ -21,6 +21,8 @@ export class Reel extends Container {
 
     private rng: RNG;
 
+    private resultSymbols: string[] = [];
+
     constructor(rng: RNG) {
         super();
         this.rng = rng;
@@ -98,6 +100,15 @@ export class Reel extends Container {
         }
     }
 
+    public setResult(symbols: string[]): void {
+        if (!symbols?.length) {
+            console.warn("Empty resultSymbols passed to Reel");
+            return;
+        }
+
+        this.resultSymbols = symbols;
+    }
+
     // Встановлює цільову швидкість для плавного старту, запуск
     public spin(): void {
         if (this.isSpinning) return
@@ -133,9 +144,21 @@ export class Reel extends Container {
             if (symbol.y >= this.symbolSize * this.symbols.length) {
                 symbol.y -= this.symbolSize * this.symbols.length;
 
-                const {id, texture} = this.getRandomSymbol();
+
+                let symbolId: string;
+                if (this.isSpinning && this.speed > 5) {
+                    // Під час швидкого обертання - випадкові символи
+                    symbolId = this.getRandomSymbol().id;
+                } else {
+                    // При уповільненні - результат з матриці
+                    const visibleIndex = Math.round(symbol.y / this.symbolSize);
+                    const resultIndex = visibleIndex % this.resultSymbols.length;
+                    symbolId = this.resultSymbols[resultIndex];
+                }
+
+                const texture = this.getTexture(symbolId);
                 symbol.texture = texture;
-                (symbol as any).symbolId = id;
+                (symbol as any).symbolId = symbolId;
             }
         }
 
