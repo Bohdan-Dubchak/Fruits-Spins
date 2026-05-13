@@ -63,4 +63,10 @@ export class ReelContainer extends Container {
     public getReels(): Reel[] {
         return this.reels;
     }
+
+    public setSpinResult(matrix: string[][]): void {
+        this.reels.forEach((reel, index) => {
+            reel.setResult(matrix[index]);
+        });
+    }
 }
