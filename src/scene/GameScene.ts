@@ -12,6 +12,7 @@ import { WalletManager } from "../game/engine/WalletManager.ts";
 import {WinText} from "../ui/WinText.ts";
 import {WinTextAnimation} from "../animations/WinAnimations.ts";
 import {RNG} from "../game/engine/RNG.ts";
+import {WeightedSpinGenerator} from "../game/engine/WeightedSpinGenerator.ts";
 
 export class GameScene extends Container {
     private reelsContainer!: ReelContainer;
@@ -25,10 +26,12 @@ export class GameScene extends Container {
     private winText!: WinText;
 
     private rng: RNG;
+    private spinGenerator: WeightedSpinGenerator;
 
     constructor(rng: RNG) {
         super();
         this.rng = rng;
+        this.spinGenerator = new WeightedSpinGenerator(this.rng);
         this.init();
     }
 
@@ -83,6 +86,10 @@ export class GameScene extends Container {
         this.hud.updateBalance(this.wallet.getBalance());
         this.hud.updateBet(this.wallet.getBet());
 
+        const matrix = this.spinGenerator.generateMatrix();
+        this.reelsContainer.setSpinResult(matrix);
+        console.log(matrix);
+
         await this.reelsContainer.spinAll(() => {
             if (this.reelsContainer.isAnySpinning()) return;
 
@@ -91,6 +98,7 @@ export class GameScene extends Container {
             this.checkWin();
 
             this.isCheckingWin = false;
+            // this.isSpinning = false;
 
             // Auto spin loop
             if (this.isAutoSpun) {
