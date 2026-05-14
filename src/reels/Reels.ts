@@ -1,5 +1,6 @@
 import {Assets, Container,  Sprite, Texture, Ticker, Graphics} from "pixi.js";
 import {RNG} from "../game/engine/RNG.ts";
+import {ReelAnimations} from "../animations/ReelAnimations.ts";
 
 type SymbolDate = {
     id: string;
@@ -20,8 +21,9 @@ export class Reel extends Container {
     private isSpinning = false;
 
     private rng: RNG;
-
     private resultSymbols: string[] = [];
+
+    private animations!: ReelAnimations;
 
     constructor(rng: RNG) {
         super();
@@ -36,6 +38,7 @@ export class Reel extends Container {
         this.loadTextures();
         this.createSymbols();
         this.createMask();
+        this.animations = new ReelAnimations(this, this.symbolsContainer, this.symbolSize, this.reelHeight);
 
         Ticker.shared.add(this.update, this);
     }
@@ -59,7 +62,6 @@ export class Reel extends Container {
             {id: 'orange', texture: Assets.get("orange")},
             {id: 'plum', texture: Assets.get("plum")},
             {id: 'seven', texture: Assets.get("seven")},
-
         ]
     }
 
@@ -131,6 +133,7 @@ export class Reel extends Container {
 
     // Цикл анімації швидкості
     private update(): void {
+        this.animations.update(this.speed, this.targetSpeed);
 
         if (this.speed < this.targetSpeed) {
             this.speed += 0.5;
@@ -223,6 +226,4 @@ export class Reel extends Container {
 
         return result;
     }
-
-
 }
