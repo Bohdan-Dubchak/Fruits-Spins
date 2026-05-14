@@ -15,6 +15,8 @@ export class Loader {
             {alias: 'autoSpin', src: '/assets/button/autoSpin.png'},
             {alias: 'plus', src: '/assets/button/plus.png'},
             {alias: 'minus', src: '/assets/button/minus.png'},
+            {alias: 'fade-bottom', src: '/assets/effects/fade-bottom.png'},
+            {alias: 'fade-top', src: '/assets/effects/fade-top.png'},
         ];
 
         Assets.add(assets);
