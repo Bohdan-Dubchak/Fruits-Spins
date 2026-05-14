@@ -1,5 +1,5 @@
 import {RNG} from "./RNG.ts";
-import {SYMBOL_WEIGHTS} from "../../config/symbolWeights.ts";
+import {SYMBOL_WEIGHTS} from "../../constants/symbolWeights.ts";
 
 export class WeightedSpinGenerator {
     private rng: RNG;

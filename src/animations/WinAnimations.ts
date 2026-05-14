@@ -1,4 +1,4 @@
-import {WinText} from "../ui/WinText.ts";
+import {WinText} from "../ui/display/WinText.ts";
 import {gsap} from "gsap";
 
 export class WinTextAnimation {

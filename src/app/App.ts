@@ -1,5 +1,5 @@
 import {Application, Container, type Renderer} from "pixi.js";
-import {GAME_CONFIG} from "../config/constants.ts";
+import {GAME_CONFIG} from "../config/game.ts";
 import {Loader} from "../config/Loader.ts";
 import {GameScene} from "../scene/GameScene.ts";
 import {RNG} from "../game/engine/RNG.ts";
