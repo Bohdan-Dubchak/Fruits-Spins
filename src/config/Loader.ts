@@ -17,6 +17,9 @@ export class Loader {
             {alias: 'minus', src: '/assets/button/minus.png'},
             {alias: 'fade-bottom', src: '/assets/effects/fade-bottom.png'},
             {alias: 'fade-top', src: '/assets/effects/fade-top.png'},
+            {alias: 'homeButton', src: '/assets/button/homeBtn.png'},
+            {alias: 'offSoundButton', src: '/assets/button/offSoundBtn.png'},
+            {alias: 'onSoundButton', src: '/assets/button/onSoundBtn.png'},
         ];
 
         Assets.add(assets);
