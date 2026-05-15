@@ -1,24 +1,26 @@
-import {Container, Assets, Sprite, Rectangle} from "pixi.js";
-import { gsap } from "gsap";
+import {Assets, Container, Rectangle, Sprite} from "pixi.js";
+import {gsap} from "gsap";
 
-export class SpinButton extends Container {
+export class HomeBtn extends Container {
+
     private originalScaleX: number;
     private originalScaleY: number;
 
-    constructor(onClick: () => void) {
+    constructor(onClick: () => void)  {
         super();
 
         this.eventMode = 'static';
         this.cursor = 'pointer';
 
-        const texture = Assets.get('spinButton');
+        const texture = Assets.get('homeButton');
         const bg = new Sprite(texture);
 
         bg.anchor.set(0.5);
-        bg.position.set(883, 541);
-        bg.width = 230;
-        bg.height = 80;
+        bg.position.set(27, 30);
 
+        const scale = 50 / texture.width;
+        bg.scale.set(scale);
+        bg.roundPixels = true;
 
         this.originalScaleX = bg.scale.x;
         this.originalScaleY = bg.scale.y;
@@ -32,35 +34,16 @@ export class SpinButton extends Container {
             bg.height
         );
 
-        const pressButton = () => {
+        this.on('pointerdown', () => {
             gsap.killTweensOf(bg.scale);
-
-            const tl = gsap.timeline();
-
-            tl.to(bg.scale, {
+            gsap.to(bg.scale, {
                 x: this.originalScaleX * 0.95,
                 y: this.originalScaleY * 0.95,
                 duration: 0.08,
                 ease: "power2.out"
             });
-
-            tl.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.12,
-                ease: "back.out(4)"
-            });
-
             onClick();
-        };
-
-        this.on('pointerdown', pressButton);
-
-        window.addEventListener("keydown", (e) => {
-            if ((e.code === "Space") && !e.repeat) {
-                pressButton();
-            }
-        });
+        }, {once: true});
 
         this.on('pointerup', () => {
             gsap.killTweensOf(bg.scale);
@@ -69,16 +52,16 @@ export class SpinButton extends Container {
                 y: this.originalScaleY,
                 duration: 0.2,
                 ease: "back.out(4)"
-            });
-        }, { once: true });
+            })
+        })
 
         this.on('pointerout', () => {
             gsap.killTweensOf(bg.scale);
             gsap.to(bg.scale, {
                 x: this.originalScaleX,
                 y: this.originalScaleY,
-                duration: 0.2
             });
-        }, { once: true });
+        });
+
     }
 }

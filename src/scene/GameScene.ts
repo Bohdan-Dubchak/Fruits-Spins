@@ -1,10 +1,12 @@
 import { Assets, Container, Sprite } from "pixi.js";
 import { ReelContainer } from "../reels/ReelsContainer.ts";
-import { SpinButton } from "../ui/button/spinButton.ts";
+import { SpinButton } from "../ui/SpinBtn/spinButton.ts";
+import {HomeBtn} from "../ui/button/homeButton.ts";
+import {SoundButton} from "../ui/button/soundButton.ts";
 import { GAME_CONFIG } from "../config/game.ts";
 import { payLines, payTable } from "../constants/paylines.ts";
 import { WinCalculator } from "../game/calculator/WinCalculator.ts";
-import { AutoSpin } from "../ui/button/autoSpinBtn.ts";
+import { AutoSpin } from "../ui/SpinBtn/autoSpinBtn.ts";
 import { PlusBet } from "../ui/button/plusButton.ts";
 import { HUD } from "../ui/display/HUD.ts";
 import { MinusButton } from "../ui/button/minusButton.ts";
@@ -167,7 +169,16 @@ export class GameScene extends Container {
         minusButton.on("pointerup", stop);
         minusButton.on("pointerupoutside", stop);
 
-        this.addChild(spinButton, autoSpin, plusButton, minusButton);
+
+        const homeBtn = new HomeBtn(() => {
+
+        });
+
+        const soundBtn = new SoundButton(() => {
+
+        });
+
+        this.addChild(spinButton, autoSpin, plusButton, minusButton, homeBtn, soundBtn);
     }
 
     private checkWin(): void {
