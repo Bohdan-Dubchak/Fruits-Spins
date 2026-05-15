@@ -69,4 +69,12 @@ export class ReelContainer extends Container {
             reel.setResult(matrix[index]);
         });
     }
+
+    public getSymbolMatrix(): string[][] { // ← просто string[][]
+        return this.reels.map((reel) => {
+            return reel.getVisibleSymbolsSprites().map(sprite => {
+                return (sprite as any).symbolId; // ← без type assertion
+            });
+        });
+    }
 }
