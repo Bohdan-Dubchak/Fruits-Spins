@@ -1,4 +1,4 @@
-import {Container} from "pixi.js";
+import {Container, type Sprite} from "pixi.js";
 import {Reel} from "./Reels.ts";
 import {RNG} from "../game/engine/RNG.ts";
 
@@ -76,5 +76,12 @@ export class ReelContainer extends Container {
                 return (sprite as any).symbolId; // ← без type assertion
             });
         });
+    }
+
+    public getSymbolSprite(reelIndex: number, row: number): Sprite | null {
+        if (reelIndex < 0 || reelIndex >= this.reels.length) return null;
+
+        const visibleSprites = this.reels[reelIndex].getVisibleSymbolsSprites();
+        return visibleSprites[row] || null;
     }
 }

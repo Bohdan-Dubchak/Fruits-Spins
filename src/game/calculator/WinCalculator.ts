@@ -3,6 +3,7 @@ type WinResult = {
     symbol: string;
     count: number;
     amount: number;
+    startPosition: number;
 };
 
 export class WinCalculator {
@@ -13,7 +14,6 @@ export class WinCalculator {
     } {
 
         const wins: WinResult[] = [];
-
         let totalWin = 0;
 
         payLines.forEach((line, lineIndex) => {
@@ -38,6 +38,7 @@ export class WinCalculator {
                         symbol: win.symbol,
                         count: win.count,
                         amount,
+                        startPosition: win.startPosition
                     });
                 }
             });
@@ -49,9 +50,9 @@ export class WinCalculator {
         };
     }
 
-    private static checkLine(symbols: string[]): { symbol: string, count: number }[] {
+    private static checkLine(symbols: string[]): { symbol: string, count: number, startPosition: number }[] {
 
-        const results: { symbol: string, count: number }[] = [];
+        const results: { symbol: string, count: number, startPosition: number }[] = [];
 
         // Перевіряємо з кожної позиції
         for (let s = 0; s <= symbols.length - 3; s++) {
@@ -69,8 +70,8 @@ export class WinCalculator {
 
             // Якщо знайшли 3 або більше - додаємо
             if (count >= 3) {
-                results.push({symbol, count});
-                break; // Беремо першу знайдену комбінацію
+                results.push({symbol, count, startPosition: s});
+                break;
             }
         }
 

@@ -102,7 +102,8 @@ export class GameScene extends Container {
         return new WinHandler(
             this.wallet,
             this.winText,
-            this.hud
+            this.hud,
+            this.reelsContainer
         );
     }
 
