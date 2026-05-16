@@ -1,56 +1,42 @@
 import { Assets, Container, Sprite } from "pixi.js";
 import { ReelContainer } from "../reels/ReelsContainer.ts";
-import { SpinButton } from "../ui/SpinBtn/spinButton.ts";
-import {HomeBtn} from "../ui/button/homeButton.ts";
-import {SoundButton} from "../ui/button/soundButton.ts";
-import { GAME_CONFIG } from "../config/game.ts";
-import { payLines, payTable } from "../constants/paylines.ts";
-import { WinCalculator } from "../game/calculator/WinCalculator.ts";
-import { AutoSpin } from "../ui/SpinBtn/autoSpinBtn.ts";
-import { PlusBet } from "../ui/button/plusButton.ts";
 import { HUD } from "../ui/display/HUD.ts";
-import { MinusButton } from "../ui/button/minusButton.ts";
+import { WinText } from "../ui/display/WinText.ts";
 import { WalletManager } from "../game/wallet/WalletManager.ts";
-import {WinText} from "../ui/display/WinText.ts";
-import {WinTextAnimation} from "../animations/WinAnimations.ts";
-import {RNG} from "../game/engine/RNG.ts";
-import {WeightedSpinGenerator} from "../game/engine/WeightedSpinGenerator.ts";
+import { SpinManager } from "../game/spin/SpinManager.ts";
+import { BetManager } from "../game/bet/BetManager.ts";
+import { WinHandler } from "../game/win/WinHandler.ts";
+import { RNG } from "../game/engine/RNG.ts";
+import { WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
+import { GAME_CONFIG } from "../config/game.ts";
+import { UIFactory } from "../ui/UIFactory.ts";
 
 export class GameScene extends Container {
-    private reelsContainer!: ReelContainer;
-    private hud!: HUD;
+    private reelsContainer: ReelContainer;
+    private hud: HUD;
+    private winText: WinText;
 
-    private wallet = new WalletManager();
+    private readonly wallet = new WalletManager();
+    private readonly rng: RNG;
+    private readonly spinGenerator: WeightedSpinGenerator;
 
-    private isAutoSpun: boolean = false;
-    private isCheckingWin: boolean = false;
-
-    private winText!: WinText;
-
-    private rng: RNG;
-    private spinGenerator: WeightedSpinGenerator;
+    private spinManager: SpinManager;
+    private betManager: BetManager;
+    private winHandler: WinHandler;
 
     constructor(rng: RNG) {
         super();
         this.rng = rng;
         this.spinGenerator = new WeightedSpinGenerator(this.rng);
-        this.init();
-    }
 
-    private async init(): Promise<void> {
         this.createBackgroundImage();
-        this.createReels();
+        this.reelsContainer = this.createReels();
+        this.hud = this.createHUD();
+        this.winText = this.createWinText();
 
-        this.hud = new HUD(
-            this.wallet.getBalance(),
-            this.wallet.getBet()
-        );
-
-        this.addChild(this.hud);
-
-        this.winText = new WinText();
-        this.winText.position.set(GAME_CONFIG.WIDTH / 2, GAME_CONFIG.HEIGHT / 2);
-        this.addChild(this.winText);
+        this.betManager = this.createBetManager();
+        this.winHandler = this.createWinHandler();
+        this.spinManager = this.createSpinManager();
 
         this.createUI();
     }
@@ -65,151 +51,75 @@ export class GameScene extends Container {
         this.addChild(sprite);
     }
 
-    private createReels(): void {
-        this.reelsContainer = new ReelContainer(5, this.rng);
-        this.reelsContainer.position.set(165, 80);
-
-        this.addChild(this.reelsContainer);
+    private createReels(): ReelContainer {
+        const reelsContainer = new ReelContainer(5, this.rng);
+        reelsContainer.position.set(165, 80);
+        this.addChild(reelsContainer);
+        return reelsContainer;
     }
 
-    //  Spin logic
-    private async startSpin(): Promise<void> {
-        if (this.reelsContainer.isAnySpinning()) return;
+    private createHUD(): HUD {
+        const hud = new HUD(
+            this.wallet.getBalance(),
+            this.wallet.getBet()
+        );
+        this.addChild(hud);
+        return hud;
+    }
 
-        if (!this.wallet.canSpin()) {
-            this.isAutoSpun = false;
-            return;
-        }
+    private createWinText(): WinText {
+        const winText = new WinText();
+        winText.position.set(GAME_CONFIG.WIDTH / 2, GAME_CONFIG.HEIGHT / 2);
+        this.addChild(winText);
+        return winText;
+    }
 
-        if (this.isCheckingWin) return;
+    private createBetManager(): BetManager {
+        return new BetManager(
+            this.wallet,
+            (bet) => this.hud.updateBet(bet)
+        );
+    }
 
-        this.wallet.spendBet();
+    private createWinHandler(): WinHandler {
+        return new WinHandler(
+            this.wallet,
+            this.winText,
+            this.hud
+        );
+    }
 
-        this.hud.updateBalance(this.wallet.getBalance());
-        this.hud.updateBet(this.wallet.getBet());
-
-        const matrix = this.spinGenerator.generateMatrix();
-        this.reelsContainer.setSpinResult(matrix);
-        console.log(matrix);
-
-        await this.reelsContainer.spinAll(() => {
-            if (this.reelsContainer.isAnySpinning()) return;
-
-            this.isCheckingWin = true;
-
-            this.checkWin();
-
-            this.isCheckingWin = false;
-            // this.isSpinning = false;
-
-            // Auto spin loop
-            if (this.isAutoSpun) {
-                setTimeout(() => {
-                    this.startSpin();
-                }, 500);
+    private createSpinManager(): SpinManager {
+        return new SpinManager(
+            this.reelsContainer,
+            this.spinGenerator,
+            this.wallet,
+            (matrix) => {
+                this.winHandler.handleWin(matrix, this.wallet.getBet());
+            },
+            () => {
+                this.hud.updateBalance(this.wallet.getBalance());
             }
-        });
+        );
     }
 
     private createUI(): void {
-        let interval: ReturnType<typeof setInterval> | null = null;
+        const uiFactory = new UIFactory();
+        const uiElements = uiFactory.createGameUI(
+            () => {
+                this.spinManager.executeSpin();
+                // Оновити HUD після запуску обертання
+                this.hud.updateBalance(this.wallet.getBalance());
+            },
+            () => this.spinManager.toggleAutoSpin(),
+            this.betManager
+        );
 
-        const stop = () => {
-            if (interval) {
-                clearInterval(interval);
-                interval = null;
-            }
-        };
-
-        //  Spin
-        const spinButton = new SpinButton(() => {
-            this.startSpin();
-        });
-
-        // Auto spin
-        const autoSpin = new AutoSpin(() => {
-            this.isAutoSpun = !this.isAutoSpun;
-
-            if (this.isAutoSpun) {
-                this.startSpin();
-            }
-        });
-
-        const plusButton = new PlusBet(() => {
-            this.wallet.increaseBet();
-            this.hud.updateBet(this.wallet.getBet());
-        });
-
-        plusButton.on("pointerdown", () => {
-            stop();
-
-            interval = setInterval(() => {
-                this.wallet.increaseBet();
-                this.hud.updateBet(this.wallet.getBet());
-            }, 190);
-        });
-
-        plusButton.on("pointerup", stop);
-        plusButton.on("pointerupoutside", stop);
-
-        const minusButton = new MinusButton(() => {
-            this.wallet.decreaseBet();
-            this.hud.updateBet(this.wallet.getBet());
-        });
-
-        minusButton.on("pointerdown", () => {
-            stop();
-
-            interval = setInterval(() => {
-                this.wallet.decreaseBet();
-                this.hud.updateBet(this.wallet.getBet());
-            }, 190);
-        });
-
-        minusButton.on("pointerup", stop);
-        minusButton.on("pointerupoutside", stop);
-
-
-        const homeBtn = new HomeBtn(() => {
-
-        });
-
-        const soundBtn = new SoundButton(() => {
-
-        });
-
-        this.addChild(spinButton, autoSpin, plusButton, minusButton, homeBtn, soundBtn);
+        this.addChild(...uiElements);
     }
 
-    private checkWin(): void {
-        const reels = this.reelsContainer.getReels();
-
-        const matrix = reels.map((reel) => {
-            return reel.getVisibleSymbolsSprites().map(sprite => {
-                return (sprite as any).symbolId;
-            });
-        });
-
-        const result = WinCalculator.calculate(matrix, this.wallet.getBet(), payLines, payTable);
-
-        result.wins.forEach(win => {
-            console.log(
-                `🎉 Line ${win.lineIndex + 1}`,
-                `Symbol: ${win.symbol}`,
-                `Count: ${win.count}`,
-                `Win: ${win.amount}`
-            );
-        });
-
-        console.log("💰 TOTAL:", result.totalWin);
-
-        if (result.totalWin > 0) {
-            this.wallet.addWin(result.totalWin);
-
-            this.hud.updateBalance(this.wallet.getBalance());
-
-            this.winText.setAmount(result.totalWin);
-            WinTextAnimation.play(this.winText);
-        }
+    public override destroy(options?: any): void {
+        this.betManager.destroy();
+        super.destroy(options);
     }
 }

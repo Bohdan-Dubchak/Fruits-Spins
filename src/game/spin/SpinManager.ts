@@ -1,0 +1,69 @@
+import {ReelContainer} from "../../reels/ReelsContainer.ts";
+import {WeightedSpinGenerator} from "../engine/WeightedSpinGenerator.ts";
+import {WalletManager} from "../wallet/WalletManager.ts";
+
+export class SpinManager {
+    private isAutoSpinActive: boolean = false;
+    private isCheckingWin: boolean = false;
+
+    private reelsContainer: ReelContainer;
+    private spinGenerator: WeightedSpinGenerator;
+    private wallet: WalletManager;
+    private onWinCheck: (matrix: string[][]) => void; // ← просто string[][]
+    private onBalanceUpdate: () => void;
+
+    constructor(
+        reelsContainer: ReelContainer,
+        spinGenerator: WeightedSpinGenerator,
+        wallet: WalletManager,
+        onWinCheck: (matrix: string[][]) => void, // ← просто string[][]
+        onBalanceUpdate: () => void
+    ) {
+        this.reelsContainer = reelsContainer;
+        this.spinGenerator = spinGenerator;
+        this.wallet = wallet;
+        this.onWinCheck = onWinCheck;
+        this.onBalanceUpdate = onBalanceUpdate;
+    }
+
+    async executeSpin(): Promise<void> {
+        if (this.reelsContainer.isAnySpinning()) return;
+        if (!this.wallet.canSpin()) {
+            this.stopAutoSpin();
+            return;
+        }
+        if (this.isCheckingWin) return;
+
+        this.wallet.spendBet();
+        this.onBalanceUpdate();
+
+        const matrix = this.spinGenerator.generateMatrix();
+        this.reelsContainer.setSpinResult(matrix);
+
+        await this.reelsContainer.spinAll(() => {
+            if (this.reelsContainer.isAnySpinning()) return;
+
+            this.isCheckingWin = true;
+
+            const realMatrix = this.reelsContainer.getSymbolMatrix();
+            this.onWinCheck(realMatrix);
+
+            this.isCheckingWin = false;
+
+            if (this.isAutoSpinActive) {
+                setTimeout(() => this.executeSpin(), 500);
+            }
+        });
+    }
+
+    toggleAutoSpin(): void {
+        this.isAutoSpinActive = !this.isAutoSpinActive;
+        if (this.isAutoSpinActive) {
+            this.executeSpin();
+        }
+    }
+
+    stopAutoSpin(): void {
+        this.isAutoSpinActive = false;
+    }
+}
