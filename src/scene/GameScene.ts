@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite } from "pixi.js";
+import {Assets, Container, Sprite} from "pixi.js";
 import { ReelContainer } from "../reels/ReelsContainer.ts";
 import { HUD } from "../ui/display/HUD.ts";
 import { WinText } from "../ui/display/WinText.ts";
@@ -10,6 +10,7 @@ import { RNG } from "../game/engine/RNG.ts";
 import { WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
 import { GAME_CONFIG } from "../config/game.ts";
 import { UIFactory } from "../ui/UIFactory.ts";
+import {ReelsOverlay} from "../reels/ReelsOverlay.ts";
 
 export class GameScene extends Container {
     private reelsContainer: ReelContainer;
@@ -31,6 +32,7 @@ export class GameScene extends Container {
 
         this.createBackgroundImage();
         this.reelsContainer = this.createReels();
+        this.createReelsOverlay();
         this.hud = this.createHUD();
         this.winText = this.createWinText();
 
@@ -56,6 +58,21 @@ export class GameScene extends Container {
         reelsContainer.position.set(165, 80);
         this.addChild(reelsContainer);
         return reelsContainer;
+    }
+
+    private createReelsOverlay(): void {
+        const overlay = new ReelsOverlay({
+            width: 117 * 6.2,
+            height: 351,
+            topShadowHeight: 15,
+            bottomShadowHeight: 15,
+            color: 0x3d2817,
+            alpha: 0.5,
+            blurStrength: 12
+        });
+
+        overlay.position.set(155, 129);
+        this.addChild(overlay);
     }
 
     private createHUD(): HUD {
