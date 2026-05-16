@@ -5,6 +5,7 @@ import {ReelAnimations} from "../animations/ReelAnimations.ts";
 type SymbolDate = {
     id: string;
     texture: Texture;
+    scale?: number;
 }
 
 export class Reel extends Container {
@@ -56,9 +57,9 @@ export class Reel extends Container {
     private loadTextures(): void {
         this.symbolMap = [
             {id: 'bell', texture: Assets.get("bell")},
-            {id: 'cherry', texture: Assets.get("cherry")},
+            {id: 'cherry', texture: Assets.get("cherry"), scale: 1.2},
             {id: 'grapes', texture: Assets.get("grapes")},
-            {id: 'lemon', texture: Assets.get("lemon")},
+            {id: 'lemon', texture: Assets.get("lemon"), scale: 1.5},
             {id: 'orange', texture: Assets.get("orange")},
             {id: 'plum', texture: Assets.get("plum")},
             {id: 'seven', texture: Assets.get("seven")},
