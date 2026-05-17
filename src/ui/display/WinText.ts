@@ -7,7 +7,7 @@ export class WinText extends Text {
             style: new TextStyle({
                 fontFamily: "Arial",
                 fontSize: 100,
-                fill: "#FFD700",
+                fill: "#fff200",
                 fontWeight: "bold",
                 stroke: "#000000",
                 align: "center",
