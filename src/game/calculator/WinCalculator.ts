@@ -4,6 +4,8 @@ type WinResult = {
     count: number;
     amount: number;
     startPosition: number;
+    isVertical?: boolean;
+    positions?: { reel: number; row: number }[];
 };
 
 export class WinCalculator {
@@ -30,7 +32,14 @@ export class WinCalculator {
                     (payTable[win.symbol]?.[win.count] || 0) * bet;
 
                 if (amount > 0) {
-
+                    const positions = [];
+                    for (let i = 0; i < win.count; i++) {
+                        const reelIndex = win.startPosition + i;
+                        positions.push({
+                            reel: reelIndex,
+                            row: line[reelIndex]
+                        });
+                    }
                     totalWin += amount;
 
                     wins.push({
@@ -38,11 +47,43 @@ export class WinCalculator {
                         symbol: win.symbol,
                         count: win.count,
                         amount,
-                        startPosition: win.startPosition
+                        startPosition: win.startPosition,
+                        isVertical: false,
+                        positions,
                     });
                 }
             });
         });
+
+        // Вертикальний виграш
+        matrix.forEach((reel, reelIndex) => {
+            const verticalWins = this.checkLine(reel);
+
+            verticalWins.forEach(win => {
+                const amount = (payTable[win.symbol]?.[win.count] || 0) * bet;
+
+                if (amount > 0) {
+                    const positions = [];
+                    for (let i = 0; i < win.count; i++) {
+                        positions.push({
+                            reel: reelIndex,
+                            row: win.startPosition + i
+                        });
+                    }
+                    totalWin += amount;
+
+                    wins.push({
+                        lineIndex: reelIndex,
+                        symbol: win.symbol,
+                        count: win.count,
+                        amount,
+                        startPosition: win.startPosition,
+                        isVertical: true,
+                        positions
+                    })
+                }
+            })
+        })
 
         return {
             totalWin,
