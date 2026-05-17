@@ -16,8 +16,10 @@ export class App {
         await this.app.init({
             width: GAME_CONFIG.WIDTH,
             height: GAME_CONFIG.HEIGHT,
-            backgroundColor: '#0c0c1e'
+            backgroundColor: '#000000',
         });
+
+        this.app.canvas.style.borderRadius = '20px'
 
         document.body.appendChild(this.app.canvas);
 

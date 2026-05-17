@@ -86,7 +86,7 @@ export class GameScene extends Container {
 
     private createWinText(): WinText {
         const winText = new WinText();
-        winText.position.set(GAME_CONFIG.WIDTH / 2, GAME_CONFIG.HEIGHT / 2);
+        winText.position.set(GAME_CONFIG.WIDTH / 2, 65);
         this.addChild(winText);
         return winText;
     }
