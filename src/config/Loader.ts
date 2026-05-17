@@ -20,6 +20,7 @@ export class Loader {
             {alias: 'homeButton', src: '/assets/button/homeBtn.png'},
             {alias: 'offSoundButton', src: '/assets/button/offSoundBtn.png'},
             {alias: 'onSoundButton', src: '/assets/button/onSoundBtn.png'},
+            {alias: 'info', src: '/assets/button/info.png'},
         ];
 
         Assets.add(assets);
