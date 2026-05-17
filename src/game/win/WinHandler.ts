@@ -1,10 +1,10 @@
 import {Sprite} from "pixi.js";
-import { WalletManager } from "../wallet/WalletManager.ts";
-import { WinText } from "../../ui/display/WinText.ts";
-import { HUD } from "../../ui/display/HUD.ts";
-import { WinCalculator } from "../calculator/WinCalculator.ts";
-import { payLines, payTable } from "../../constants/paylines.ts";
-import { WinTextAnimation } from "../../animations/WinAnimations.ts";
+import {WalletManager} from "../wallet/WalletManager.ts";
+import {WinText} from "../../ui/display/WinText.ts";
+import {HUD} from "../../ui/display/HUD.ts";
+import {WinCalculator} from "../calculator/WinCalculator.ts";
+import {payLines, payTable} from "../../constants/paylines.ts";
+import {WinTextAnimation} from "../../animations/WinAnimations.ts";
 import {ReelContainer} from "../../reels/ReelsContainer.ts";
 import {animationSymbols} from "../../animations/ReelSymbolAnimation.ts";
 
@@ -37,16 +37,18 @@ export class WinHandler {
             const winningSprites: Sprite[] = [];
 
             result.wins.forEach(win => {
-                const line = payLines[win.lineIndex];
 
-                // Беремо тільки стільки символів, скільки виграло
-                for (let i = win.startPosition; i < win.startPosition + win.count; i++) {
-                    const row = line[i];
-                    const sprite = this.reelsContainer.getSymbolSprite(i, row);
+                // Використовуємо готові positions
+                win.positions?.forEach(pos => {
+                    const sprite = this.reelsContainer.getSymbolSprite(
+                        pos.reel,
+                        pos.row
+                    );
+
                     if (sprite && !winningSprites.includes(sprite)) {
                         winningSprites.push(sprite);
                     }
-                }
+                });
             });
 
             // Викликаємо анімацію
@@ -63,7 +65,7 @@ export class WinHandler {
     }
 
     private logWins(wins: any[]): void {
-        wins.forEach(win => {
+        wins.forEach((win) => {
             console.log(
                 `🎉 Line ${win.lineIndex + 1}`,
                 `Symbol: ${win.symbol}`,
