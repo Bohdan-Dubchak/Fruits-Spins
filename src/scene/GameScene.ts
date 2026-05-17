@@ -10,7 +10,8 @@ import { RNG } from "../game/engine/RNG.ts";
 import { WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
 import { GAME_CONFIG } from "../config/game.ts";
 import { UIFactory } from "../ui/UIFactory.ts";
-import {ReelsOverlay} from "../reels/ReelsOverlay.ts";
+import { ReelsOverlay } from "../reels/ReelsOverlay.ts";
+import {InfoPanelManager} from "../ui/display/InfoPanelManager.ts";
 
 export class GameScene extends Container {
     private reelsContainer: ReelContainer;
@@ -24,6 +25,7 @@ export class GameScene extends Container {
     private spinManager: SpinManager;
     private betManager: BetManager;
     private winHandler: WinHandler;
+    private infoPanelManager: InfoPanelManager;
 
     constructor(rng: RNG) {
         super();
@@ -39,6 +41,7 @@ export class GameScene extends Container {
         this.betManager = this.createBetManager();
         this.winHandler = this.createWinHandler();
         this.spinManager = this.createSpinManager();
+        this.infoPanelManager = this.createInfoPanelManager();
 
         this.createUI();
     }
@@ -113,11 +116,21 @@ export class GameScene extends Container {
             this.spinGenerator,
             this.wallet,
             (matrix) => {
-                this.winHandler.handleWin(matrix, this.wallet.getBet());
+                const winAmount = this.winHandler.handleWin(matrix, this.wallet.getBet());
+                this.infoPanelManager.updateLastWin(winAmount);
             },
             () => {
                 this.hud.updateBalance(this.wallet.getBalance());
             }
+        );
+    }
+
+    private createInfoPanelManager(): InfoPanelManager {
+        return new InfoPanelManager(
+            this.wallet,
+            this,
+            GAME_CONFIG.WIDTH,
+            GAME_CONFIG.HEIGHT
         );
     }
 
@@ -126,11 +139,11 @@ export class GameScene extends Container {
         const uiElements = uiFactory.createGameUI(
             () => {
                 this.spinManager.executeSpin();
-                // Оновити HUD після запуску обертання
                 this.hud.updateBalance(this.wallet.getBalance());
             },
             () => this.spinManager.toggleAutoSpin(),
-            this.betManager
+            this.betManager,
+            () => this.infoPanelManager.show()
         );
 
         this.addChild(...uiElements);
@@ -138,6 +151,7 @@ export class GameScene extends Container {
 
     public override destroy(options?: any): void {
         this.betManager.destroy();
+        this.infoPanelManager.destroy();
         super.destroy(options);
     }
 }

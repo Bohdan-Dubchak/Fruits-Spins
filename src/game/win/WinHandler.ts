@@ -22,7 +22,7 @@ export class WinHandler {
         this.reelsContainer = reelsContainer;
     }
 
-    handleWin(matrix: string[][], bet: number): void {
+    handleWin(matrix: string[][], bet: number): number {
         const result = WinCalculator.calculate(
             matrix,
             bet,
@@ -62,6 +62,8 @@ export class WinHandler {
             this.winText.setAmount(result.totalWin);
             WinTextAnimation.play(this.winText);
         }
+
+        return result.totalWin;  // Повертаємо суму виграшу
     }
 
     private logWins(wins: any[]): void {
