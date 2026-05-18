@@ -1,19 +1,22 @@
-import {Application, Container, type Renderer} from "pixi.js";
+import {Application, type Renderer} from "pixi.js";
 import {GAME_CONFIG} from "../config/game.ts";
 import {Loader} from "../config/Loader.ts";
-import {GameScene} from "../scene/GameScene.ts";
 import {RNG} from "../game/engine/RNG.ts";
+import {SceneManager} from "../animations/Transitioning.ts";
 import {MenuScene} from "../scene/MenuScene.ts";
+import {GameScene} from "../scene/GameScene.ts";
 
 export class App {
+
     private app: Application<Renderer>;
-    private currentScene: Container | null = null;
+    private sceneManager: SceneManager | null = null;
 
     constructor() {
         this.app = new Application();
     }
 
     async init(): Promise<void> {
+
         await this.app.init({
             width: GAME_CONFIG.WIDTH,
             height: GAME_CONFIG.HEIGHT,
@@ -26,41 +29,24 @@ export class App {
 
         await Loader.load();
 
+        this.sceneManager = new SceneManager(this.app.stage);
+
         this.showMenu();
     }
 
-    private startGame(): void {
-        this.clearScene();
+    public async showMenu() {
+        const menu = new MenuScene(() => this.startGame());
+        if (!this.sceneManager) return;
 
+        await this.sceneManager.changeScene(menu);
+    }
+
+    public async startGame() {
         const rng = new RNG(Date.now());
-        const gameScene = new GameScene(rng);
+        const game = new GameScene(rng);
 
-        this.currentScene = gameScene;
-        this.app.stage.addChild(gameScene);
-    }
+        if (!this.sceneManager) return;
 
-    private clearScene(): void {
-        if (this.currentScene) {
-            this.app.stage.removeChild(this.currentScene);
-        }
-    }
-
-    private showMenu(): void {
-        this.clearScene();
-
-        const menu = new MenuScene(() => {
-            setTimeout(() => {
-                this.startGame();
-            }, 200)
-        });
-
-        this.currentScene = menu;
-
-        this.app.stage.addChild(menu);
-
-    }
-
-    get stage() {
-        return this.app.stage;
+        await this.sceneManager.changeScene(game);
     }
 }
