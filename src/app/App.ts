@@ -3,6 +3,7 @@ import {GAME_CONFIG} from "../config/game.ts";
 import {Loader} from "../config/Loader.ts";
 import {GameScene} from "../scene/GameScene.ts";
 import {RNG} from "../game/engine/RNG.ts";
+import {MenuScene} from "../scene/MenuScene.ts";
 
 export class App {
     private app: Application<Renderer>;
@@ -25,7 +26,7 @@ export class App {
 
         await Loader.load();
 
-        this.startGame();
+        this.showMenu();
     }
 
     private startGame(): void {
@@ -42,6 +43,21 @@ export class App {
         if (this.currentScene) {
             this.app.stage.removeChild(this.currentScene);
         }
+    }
+
+    private showMenu(): void {
+        this.clearScene();
+
+        const menu = new MenuScene(() => {
+            setTimeout(() => {
+                this.startGame();
+            }, 200)
+        });
+
+        this.currentScene = menu;
+
+        this.app.stage.addChild(menu);
+
     }
 
     get stage() {
