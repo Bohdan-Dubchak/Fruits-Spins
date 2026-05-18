@@ -2,9 +2,9 @@ import {Assets, Container, Sprite, Rectangle} from "pixi.js";
 import {gsap} from "gsap";
 
 export class PlayButton extends Container {
-
     private originalScaleX: number;
     private originalScaleY: number;
+    private bg: Sprite;
 
     constructor(onClick: () => void) {
         super();
@@ -13,71 +13,53 @@ export class PlayButton extends Container {
         this.cursor = 'pointer';
 
         const texture = Assets.get("play");
-        const bg = new Sprite(texture);
+        this.bg = new Sprite(texture);
+        this.bg.anchor.set(0.5);
 
-        bg.anchor.set(0.5);
+        this.originalScaleX = this.bg.scale.x;
+        this.originalScaleY = this.bg.scale.y;
 
-        this.originalScaleX = bg.scale.x;
-        this.originalScaleY = bg.scale.y;
+        this.addChild(this.bg);
 
-        this.addChild(bg);
+        this.updateHitArea();
 
+        this.on('pointerdown', () => this.handleClick(onClick));
+    }
+
+    private handleClick(onClick: () => void): void {
+        gsap.killTweensOf(this.bg.scale);
+
+        const tl = gsap.timeline();
+
+        tl.to(this.bg.scale, {
+            x: this.originalScaleX * 0.95,
+            y: this.originalScaleY * 0.95,
+            duration: 0.08,
+            ease: "power2.out"
+        });
+
+        tl.to(this.bg.scale, {
+            x: this.originalScaleX,
+            y: this.originalScaleY,
+            duration: 0.12,
+            ease: "back.out(4)"
+        });
+
+        onClick();
+    }
+
+    private updateHitArea(): void {
         this.hitArea = new Rectangle(
-            bg.x - bg.width / 2,
-            bg.y - bg.height / 2,
-            bg.width,
-            bg.height
+            this.bg.x - this.bg.width / 2,
+            this.bg.y - this.bg.height / 2,
+            this.bg.width,
+            this.bg.height
         );
+    }
 
-
-        const click = () => {
-            gsap.killTweensOf(bg.scale);
-
-            const tl = gsap.timeline();
-
-            tl.to(bg.scale, {
-                x: this.originalScaleX * 0.95,
-                y: this.originalScaleY * 0.95,
-                duration: 0.08,
-                ease: "power2.out"
-            });
-
-            tl.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.12,
-                ease: "back.out(4)"
-            });
-
-            onClick();
-        }
-
-        this.on('pointerdown', click);
-
-        // window.addEventListener("keydown", (e) => {
-        //     if ((e.code === "Enter") && !e.repeat) {
-        //          console.log('me')
-        //         click();
-        //     }
-        // });
-
-        this.on('pointerup', () => {
-            gsap.killTweensOf(bg.scale);
-            gsap.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.2,
-                ease: "back.out(4)"
-            });
-        }, { once: true });
-
-        this.on('pointerout', () => {
-            gsap.killTweensOf(bg.scale);
-            gsap.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.2
-            });
-        }, { once: true });
+    public destroy(): void {
+        gsap.killTweensOf(this.bg.scale);
+        this.removeAllListeners();
+        super.destroy();
     }
 }
