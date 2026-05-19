@@ -1,68 +1,72 @@
 import {Assets, Container, Rectangle, Sprite} from "pixi.js";
 import {gsap} from "gsap";
 
-export class PlusBet extends Container {
-    private readonly originalScaleX: number;
-    private readonly originalScaleY: number;
 
-    constructor(onClick: () => void ) {
+export class PlusBet extends Container {
+    private originalScaleX: number;
+    private originalScaleY: number;
+    private bg: Sprite;
+
+    constructor(onClick: () => void) {
         super();
 
         this.eventMode = 'static';
         this.cursor = 'pointer';
 
         const texture = Assets.get('plus');
-        const bg = new Sprite(texture);
+        this.bg = new Sprite(texture);
 
-        {
-            bg.anchor.set(0.5);
-            bg.position.set(655, 540);
-            bg.width = 44;
-            bg.height = 47;
+        this.bg.position.set(655, 540);
+        this.bg.anchor.set(0.5);
 
-            this.originalScaleX = bg.scale.x;
-            this.originalScaleY = bg.scale.y;
+        this.bg.setSize(44, 47)
 
-            this.addChild(bg);
-        }
+        this.originalScaleX = this.bg.scale.x;
+        this.originalScaleY = this.bg.scale.y;
 
-        {
-            this.hitArea = new Rectangle(
-                bg.x - bg.width / 2,
-                bg.y - bg.height / 2,
-                bg.width,
-                bg.height
-            );
-        }
+        this.addChild(this.bg);
 
-            this.on('pointerdown', () => {
-                gsap.killTweensOf(bg.scale);
-                gsap.to(bg.scale, {
-                    x: this.originalScaleX * 0.95,
-                    y: this.originalScaleY * 0.95,
-                    duration: 0.08,
-                    ease: "power2.out"
-                });
-                onClick();
-            })
+        this.updateHitArea();
 
-            this.on('pointerup', () => {
-                gsap.killTweensOf(bg.scale);
-                gsap.to(bg.scale, {
-                    x: this.originalScaleX,
-                    y: this.originalScaleY,
-                    duration: 0.2,
-                    ease: "back.out(4)"
-                });
-            });
+        this.on('pointerdown', () => this.handleDown(onClick))
+        this.on('pointerup', () => this.handleUp());
+    }
 
-            this.on('pointerout', () => {
-                gsap.killTweensOf(bg.scale);
-                gsap.to(bg.scale, {
-                    x: this.originalScaleX,
-                    y: this.originalScaleY,
-                    duration: 0.2
-                });
-            });
-        }
+    private handleDown(onClick: () => void) {
+        gsap.killTweensOf(this.bg.scale);
+
+        gsap.to(this.bg.scale, {
+            x: this.originalScaleX * 0.95,
+            y: this.originalScaleY * 0.95,
+            duration: 0.08,
+            ease: "power2.out"
+        });
+        onClick();
+    }
+
+    private handleUp(): void {
+        gsap.killTweensOf(this.bg.scale);
+
+        gsap.to(this.bg.scale, {
+            x: this.originalScaleX,
+            y: this.originalScaleY,
+            duration: 0.2,
+            ease: "back.out(4)"
+        })
+    }
+
+    private updateHitArea(): void {
+        this.hitArea = new Rectangle(
+            this.bg.x - this.bg.width / 2,
+            this.bg.y - this.bg.height / 2,
+            this.bg.width,
+            this.bg.height
+        );
+    }
+
+    public destroy(): void {
+        gsap.killTweensOf(this.bg.scale);
+        this.removeAllListeners();
+        super.destroy();
+    }
 }

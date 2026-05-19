@@ -1,10 +1,12 @@
-import {Assets, Container, Sprite, Rectangle} from "pixi.js";
-import {gsap} from "gsap";
+import { Assets, Container, Sprite, Rectangle } from "pixi.js";
+import { gsap } from "gsap";
 
 export class PlayButton extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
     private bg: Sprite;
+
+    private handleKeyDownBound: (e: KeyboardEvent) => void;
 
     constructor(onClick: () => void) {
         super();
@@ -14,6 +16,7 @@ export class PlayButton extends Container {
 
         const texture = Assets.get("play");
         this.bg = new Sprite(texture);
+
         this.bg.anchor.set(0.5);
 
         this.originalScaleX = this.bg.scale.x;
@@ -24,6 +27,14 @@ export class PlayButton extends Container {
         this.updateHitArea();
 
         this.on('pointerdown', () => this.handleClick(onClick));
+
+        this.handleKeyDownBound = (e: KeyboardEvent) => {
+            if (e.code === 'Enter' && !e.repeat) {
+                this.handleClick(onClick);
+            }
+        };
+
+        window.addEventListener('keydown', this.handleKeyDownBound);
     }
 
     private handleClick(onClick: () => void): void {
@@ -59,6 +70,7 @@ export class PlayButton extends Container {
 
     public destroy(): void {
         gsap.killTweensOf(this.bg.scale);
+        window.removeEventListener('keydown', this.handleKeyDownBound);
         this.removeAllListeners();
         super.destroy();
     }
