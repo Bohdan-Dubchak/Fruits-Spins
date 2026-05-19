@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 export class SpinButton extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
+    private bg: Sprite;
 
     constructor(onClick: () => void) {
         super();
@@ -12,73 +13,69 @@ export class SpinButton extends Container {
         this.cursor = 'pointer';
 
         const texture = Assets.get('spinButton');
-        const bg = new Sprite(texture);
+        this.bg = new Sprite(texture);
 
-        bg.anchor.set(0.5);
-        bg.position.set(883, 541);
-        bg.width = 230;
-        bg.height = 80;
+        this.bg.anchor.set(0.5);
+        this.bg.setSize(230, 80);
+        this.bg.position.set(883, 541);
 
+        this.originalScaleX = this.bg.scale.x;
+        this.originalScaleY = this.bg.scale.y;
 
-        this.originalScaleX = bg.scale.x;
-        this.originalScaleY = bg.scale.y;
+        this.addChild(this.bg);
 
-        this.addChild(bg);
+        this.updateHitArea();
 
-        this.hitArea = new Rectangle(
-            bg.x - bg.width / 2,
-            bg.y - bg.height / 2,
-            bg.width,
-            bg.height
-        );
+        this.on('pointerdown', () => this.handleDown(onClick));
+        this.on('pointerup', () => this.handleUp());
+        this.on('pointerout', () => this.handleUp());
 
-        const pressButton = () => {
-            gsap.killTweensOf(bg.scale);
-
-            const tl = gsap.timeline();
-
-            tl.to(bg.scale, {
-                x: this.originalScaleX * 0.95,
-                y: this.originalScaleY * 0.95,
-                duration: 0.08,
-                ease: "power2.out"
-            });
-
-            tl.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.12,
-                ease: "back.out(4)"
-            });
-
-            onClick();
-        };
-
-        this.on('pointerdown', pressButton);
-
-        window.addEventListener("keydown", (e) => {
-            if ((e.code === "Space") && !e.repeat) {
-                pressButton();
+        window.addEventListener('keydown', (e) => {
+            if((e.code === 'Space') && !e.repeat) {
+                this.handleDown(onClick);
             }
+        })
+    }
+
+    private handleDown(onClick: () => void): void {
+        gsap.killTweensOf(this.bg.scale);
+
+        const tl = gsap.timeline();
+
+        tl.to(this.bg.scale, {
+            x: this.originalScaleX * 0.95,
+            y: this.originalScaleY * 0.95,
+            duration: 0.08,
+            ease: "power2.out"
         });
 
-        this.on('pointerup', () => {
-            gsap.killTweensOf(bg.scale);
-            gsap.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.2,
-                ease: "back.out(4)"
-            });
-        }, { once: true });
+        tl.to(this.bg.scale, {
+            x: this.originalScaleX,
+            y: this.originalScaleY,
+            duration: 0.12,
+            ease: "back.out(4)"
+        });
 
-        this.on('pointerout', () => {
-            gsap.killTweensOf(bg.scale);
-            gsap.to(bg.scale, {
-                x: this.originalScaleX,
-                y: this.originalScaleY,
-                duration: 0.2
-            });
-        }, { once: true });
+        onClick();
+    }
+
+    private handleUp(): void {
+        gsap.killTweensOf(this.bg.scale);
+
+        gsap.to(this.bg.scale, {
+            x: this.originalScaleX,
+            y: this.originalScaleY,
+            duration: 0.2,
+            ease: "back.out(4)"
+        });
+    }
+
+    private updateHitArea(): void {
+        this.hitArea = new Rectangle(
+            this.bg.x - this.bg.width / 2,
+            this.bg.y - this.bg.height / 2,
+            this.width,
+            this.height,
+        )
     }
 }
