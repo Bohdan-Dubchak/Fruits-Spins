@@ -57,7 +57,7 @@ export class GameScene extends Container {
     }
 
     private createReels(): ReelContainer {
-        const reelsContainer = new ReelContainer(5, this.rng);
+        const reelsContainer = new ReelContainer(GAME_CONFIG.REELS_COUNT, this.rng);
         reelsContainer.position.set(165, 80);
         this.addChild(reelsContainer);
         return reelsContainer;
