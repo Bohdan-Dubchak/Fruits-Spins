@@ -1,4 +1,5 @@
 import {Assets, Container,  Sprite, Texture, Ticker, Graphics} from "pixi.js";
+import {GAME_CONFIG} from "../config/game.ts";
 import {RNG} from "../game/engine/RNG.ts";
 import {ReelAnimations} from "../animations/ReelAnimations.ts";
 
@@ -16,8 +17,8 @@ export class Reel extends Container {
     private symbols: SymbolSprite[] = [];
     private symbolMap: SymbolDate[] = [];
 
-    private symbolSize = 117;
-    private reelHeight = 352;
+    private symbolSize = GAME_CONFIG.SYMBOL_SIZE;
+    private reelHeight = GAME_CONFIG.REEL_HEIGHT;
 
     private symbolsContainer: Container;
 
@@ -57,7 +58,10 @@ export class Reel extends Container {
         this.symbolsContainer.mask = mask;
     }
 
-    // Завантажує текстури всіх символів з Assets
+    /**
+     * Завантажує текстури всіх символів з Assets
+     * @private
+     */
     private loadTextures(): void {
         this.symbolMap = [
             {id: 'bell', texture: Assets.get("bell")},
