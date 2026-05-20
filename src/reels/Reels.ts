@@ -235,4 +235,9 @@ export class Reel extends Container {
 
         return result;
     }
+
+    public destroy(): void {
+        Ticker.shared.remove(this.update, this);
+        super.destroy();
+    }
 }
