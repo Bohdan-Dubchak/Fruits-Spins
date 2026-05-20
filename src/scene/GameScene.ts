@@ -12,6 +12,7 @@ import { GAME_CONFIG } from "../config/game.ts";
 import { UIFactory } from "../ui/UIFactory.ts";
 import { ReelsOverlay } from "../reels/ReelsOverlay.ts";
 import {InfoPanelManager} from "../ui/display/InfoPanelManager.ts";
+import {HomeBtn} from "../ui/button/homeButton.ts";
 
 export class GameScene extends Container {
     private reelsContainer: ReelContainer;
@@ -27,7 +28,9 @@ export class GameScene extends Container {
     private winHandler: WinHandler;
     private infoPanelManager: InfoPanelManager;
 
-    constructor(rng: RNG) {
+    private homeBtn: HomeBtn;
+
+    constructor(rng: RNG, onHomeClick: () => void) {
         super();
         this.rng = rng;
         this.spinGenerator = new WeightedSpinGenerator(this.rng);
@@ -42,6 +45,9 @@ export class GameScene extends Container {
         this.winHandler = this.createWinHandler();
         this.spinManager = this.createSpinManager();
         this.infoPanelManager = this.createInfoPanelManager();
+
+        this.homeBtn = new HomeBtn(onHomeClick);
+        this.addChild(this.homeBtn);
 
         this.createUI();
     }
@@ -144,6 +150,7 @@ export class GameScene extends Container {
             () => this.spinManager.toggleAutoSpin(),
             this.betManager,
             () => this.infoPanelManager.show()
+
         );
 
         this.addChild(...uiElements);
@@ -152,6 +159,9 @@ export class GameScene extends Container {
     public override destroy(options?: any): void {
         this.betManager.destroy();
         this.infoPanelManager.destroy();
+
+        this.reelsContainer.destroy();
+        this.removeChildren();
         super.destroy(options);
     }
 }

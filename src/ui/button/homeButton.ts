@@ -67,9 +67,9 @@ export class HomeBtn extends Container {
         );
     }
 
-    public destroy(): void {
+    public override destroy(options?: any): void {
         gsap.killTweensOf(this.bg.scale);
         this.removeAllListeners();
-        super.destroy();
+        super.destroy(options);
     }
 }
