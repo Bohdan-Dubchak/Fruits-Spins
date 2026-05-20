@@ -23,6 +23,8 @@ export class Loader {
             {alias: 'info', src: '/assets/button/info.png'},
             {alias: 'MenuFon', src: '/assets/Fons/MenuFon.png'},
             {alias: 'play', src: '/assets/button/play.png'},
+            {alias: 'settingsBtn', src: '/assets/button/settingsButton.png'},
+            {alias: 'exitBtn', src: '/assets/button/exitButton.png'},
         ];
 
         Assets.add(assets);
