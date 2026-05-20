@@ -4,7 +4,6 @@ import {SpinButton} from "./SpinBtn/spinButton.ts";
 import {AutoSpin} from "./SpinBtn/autoSpinBtn.ts";
 import {PlusBet} from "./button/plusButton.ts";
 import {MinusButton} from "./button/minusButton.ts";
-import {HomeBtn} from "./button/homeButton.ts";
 import {SoundButton} from "./button/soundButton.ts";
 import {InfoBtn} from "./button/infoButton.ts";
 
@@ -28,12 +27,11 @@ export class UIFactory {
             () => betManager.stop()
         );
 
-        const homeBtn = new HomeBtn(() => {});
         const soundBtn = new SoundButton(() => {});
 
         const infoBtn = new InfoBtn(onInfo);
 
-        return [spinButton, autoSpin, plusButton, minusButton, homeBtn, soundBtn, infoBtn];
+        return [spinButton, autoSpin, plusButton, minusButton, soundBtn, infoBtn];
     }
 
     private setupBetButton(button: any, onHold: () => void, onRelease: () => void): void {
