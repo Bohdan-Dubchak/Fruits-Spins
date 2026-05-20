@@ -8,8 +8,12 @@ type SymbolDate = {
     scale?: number;
 }
 
+interface SymbolSprite extends  Sprite{
+    symbolId: string;
+}
+
 export class Reel extends Container {
-    private symbols: Sprite[] = [];
+    private symbols: SymbolSprite[] = [];
     private symbolMap: SymbolDate[] = [];
 
     private symbolSize = 117;
@@ -90,13 +94,13 @@ export class Reel extends Container {
         for (let i = 0; i < 5; i++) {
             const {id, texture} = this.getRandomSymbol()
 
-            const sprite = new Sprite(texture);
+            const sprite = new Sprite(texture) as SymbolSprite;
 
             sprite.width = this.symbolSize;
             sprite.height = this.symbolSize;
             sprite.y = i * this.symbolSize;
 
-            (sprite as any).symbolId = id;
+            sprite.symbolId = id;
 
             this.symbols.push(sprite);
             this.symbolsContainer.addChild(sprite);
@@ -162,7 +166,7 @@ export class Reel extends Container {
 
                 const texture = this.getTexture(symbolId);
                 symbol.texture = texture;
-                (symbol as any).symbolId = symbolId;
+                symbol.symbolId = symbolId;
             }
         }
 
@@ -202,12 +206,12 @@ export class Reel extends Container {
             }
         }
 
-        return (closest as any).symbolId;
+        return closest.symbolId;
     }
 // Повертає масив Sprite об'єктів всіх 3 видимих символів
-    public getVisibleSymbolsSprites(): Sprite[] {
+    public getVisibleSymbolsSprites(): SymbolSprite[] {
         // Повертає три спрайти по центру (видимий ряд)
-        const result: Sprite[] = [];
+        const result: SymbolSprite[] = [];
         for (let row = 0; row < 3; row++) {
             const targetY = row * this.symbolSize;
             let closest = this.symbols[0];
