@@ -5,11 +5,13 @@ import {RNG} from "../game/engine/RNG.ts";
 import {SceneManager} from "../animations/Transitioning.ts";
 import {MenuScene} from "../scene/MenuScene.ts";
 import {GameScene} from "../scene/GameScene.ts";
+import {SettingPanelManager} from "../ui/display/settingPanelManager.ts";
 
 export class App {
 
     private app: Application<Renderer>;
     private sceneManager: SceneManager | null = null;
+    private settingPanelManager: SettingPanelManager | null = null;
 
     constructor() {
         this.app = new Application();
@@ -31,11 +33,21 @@ export class App {
 
         this.sceneManager = new SceneManager(this.app.stage);
 
+        this.settingPanelManager = new SettingPanelManager(
+            GAME_CONFIG.WIDTH,
+            GAME_CONFIG.HEIGHT,
+            this.app.stage
+        );
+
         this.showMenu();
     }
 
     public async showMenu() {
-        const menu = new MenuScene(() => this.startGame());
+        const menu = new MenuScene(
+            () => this.startGame(),
+            () => this.showSettings()
+        );
+
         if (!this.sceneManager) return;
 
         await this.sceneManager.changeScene(menu);
@@ -48,5 +60,11 @@ export class App {
         if (!this.sceneManager) return;
 
         await this.sceneManager.changeScene(game);
+    }
+
+    private showSettings(): void {
+        if (this.settingPanelManager) {
+            this.settingPanelManager.show();
+        }
     }
 }
