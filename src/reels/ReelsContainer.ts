@@ -84,4 +84,9 @@ export class ReelContainer extends Container {
         const visibleSprites = this.reels[reelIndex].getVisibleSymbolsSprites();
         return visibleSprites[row] || null;
     }
+
+    public destroy(): void {
+        this.reels.forEach(r => r.destroy());
+        super.destroy();
+    }
 }
