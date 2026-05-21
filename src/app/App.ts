@@ -5,7 +5,7 @@ import {RNG} from "../game/engine/RNG.ts";
 import {SceneManager} from "../animations/Transitioning.ts";
 import {MenuScene} from "../scene/MenuScene.ts";
 import {GameScene} from "../scene/GameScene.ts";
-import {SettingPanelManager} from "../ui/display/settingPanelManager.ts";
+import {SettingPanelManager} from "../managers/settingPanelManager.ts";
 
 export class App {
 

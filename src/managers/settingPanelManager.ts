@@ -1,5 +1,5 @@
 import {Container} from "pixi.js";
-import {SettingPanel} from "./settingPanel.ts";
+import {SettingPanel} from "../ui/display/settingPanel.ts";
 
 export class SettingPanelManager {
     private currentPanel: SettingPanel | null = null;

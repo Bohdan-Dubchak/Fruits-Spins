@@ -1,6 +1,6 @@
 import {Container} from "pixi.js";
-import {InfoPanel} from "./InfoPanel.ts";
-import {WalletManager} from "../../game/wallet/WalletManager.ts";
+import {InfoPanel} from "../ui/display/InfoPanel.ts";
+import {WalletManager} from "../game/wallet/WalletManager.ts";
 
 export class InfoPanelManager {
     private currentPanel: InfoPanel | null = null;

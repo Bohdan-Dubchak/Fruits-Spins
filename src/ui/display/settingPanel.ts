@@ -1,4 +1,5 @@
 import {Container, Graphics, Text} from "pixi.js";
+import {ScreenManager} from "../../managers/ScreenManager.ts";
 import {gsap} from "gsap";
 
 export class SettingPanel extends Container {
@@ -56,6 +57,59 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(title);
 
+        const languageText = new Text({
+            text: "Мова",
+            style: {
+                fontFamily: "Arial",
+                fontSize: 25,
+                fill: 0xffd700,
+                fontWeight: "bold",
+            }
+        })
+
+        languageText.anchor.set(0.5);
+        languageText.position.set(-230,-53);
+
+        this.panel.addChild(languageText);
+
+
+        const windowText = new Text({
+            text: 'Екран',
+            style: {
+                fontFamily: "Arial",
+                fontSize: 25,
+                fill: 0xffd700,
+                fontWeight: "bold",
+            }
+        })
+
+        windowText.anchor.set(0.5);
+        windowText.position.set(-227, 9);
+
+        this.panel.addChild(windowText);
+
+
+        const soundText = new Text({
+            text: 'Звук',
+            style: {
+                fontFamily: "Arial",
+                fontSize: 25,
+                fill: 0xffd700,
+                fontWeight: "bold",
+            }
+        });
+
+        soundText.anchor.set(0.5);
+        soundText.position.set(-234, 71);
+
+        this.panel.addChild(soundText);
+
+        const fullscreenBtn = this.createOptionButton("ON", () => {
+            ScreenManager.toggleFullscreen();
+        });
+
+        this.panel.addChild(fullscreenBtn);
+
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
 
@@ -63,6 +117,45 @@ export class SettingPanel extends Container {
         this.alpha = 0;
         this.panel.scale.set(0.5);
         this.animateIn();
+    }
+
+    private createOptionButton(label: string, callback: () => void): Container {
+
+        const btn = new Container();
+
+        btn.eventMode = 'static';
+        btn.cursor = 'pointer';
+
+        const bg = new Graphics();
+        bg.roundRect(-50, -20, 100, 40, 10);
+        bg.fill({ color: 0x444444 });
+
+        btn.addChild(bg);
+
+        const text = new Text({
+            text: label,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 20,
+                fill: 0xffffff,
+                fontWeight: "bold",
+            }
+        });
+
+        text.anchor.set(0.5);
+
+        btn.addChild(text);
+
+        btn.on('pointertap', callback);
+        btn.on('pointerover', () => {
+            bg.tint = 0x666666;
+        });
+
+        btn.on('pointerout', () => {
+            bg.tint = 0xffffff;
+        });
+
+        return btn;
     }
 
     private createCloseButton(): Container {
