@@ -11,7 +11,7 @@ import { WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
 import { GAME_CONFIG } from "../config/game.ts";
 import { UIFactory } from "../ui/UIFactory.ts";
 import { ReelsOverlay } from "../reels/ReelsOverlay.ts";
-import {InfoPanelManager} from "../ui/display/InfoPanelManager.ts";
+import {InfoPanelManager} from "../managers/InfoPanelManager.ts";
 import {HomeBtn} from "../ui/button/homeButton.ts";
 
 export class GameScene extends Container {
