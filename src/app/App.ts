@@ -19,27 +19,33 @@ export class App {
 
     async init(): Promise<void> {
 
-        await this.app.init({
-            width: GAME_CONFIG.WIDTH,
-            height: GAME_CONFIG.HEIGHT,
-            backgroundColor: '#000000',
-        });
+        try {
+            await this.app.init({
+                width: GAME_CONFIG.WIDTH,
+                height: GAME_CONFIG.HEIGHT,
+                backgroundColor: '#000000',
+            });
 
-        this.app.canvas.style.borderRadius = '20px'
+            this.app.canvas.style.borderRadius = '20px'
 
-        document.body.appendChild(this.app.canvas);
+            document.body.appendChild(this.app.canvas);
 
-        await Loader.load();
+            await Loader.load();
 
-        this.sceneManager = new SceneManager(this.app.stage);
+            this.sceneManager = new SceneManager(this.app.stage);
 
-        this.settingPanelManager = new SettingPanelManager(
-            GAME_CONFIG.WIDTH,
-            GAME_CONFIG.HEIGHT,
-            this.app.stage
-        );
+            this.settingPanelManager = new SettingPanelManager(
+                GAME_CONFIG.WIDTH,
+                GAME_CONFIG.HEIGHT,
+                this.app.stage
+            );
 
-        this.showMenu();
+            this.showMenu();
+
+        } catch (err) {
+            console.error('Failed to initialize game:', err);
+        }
+
     }
 
     public async showMenu() {

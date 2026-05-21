@@ -1,6 +1,22 @@
 import {Assets} from "pixi.js";
 
+export class LoaderError extends Error {
+    public assetName: string;
+
+    constructor(assetName: string, message: string) {
+        super(message);
+
+        this.assetName = assetName;
+        this.name = 'LoaderError';
+    }
+}
+
 export class Loader {
+    private static criticalAssets = [
+        'bell', 'cherry', 'grapes', 'lemon',
+        'orange', 'plum', 'seven', 'backFon'
+    ];
+
     public static async load(onProgress?: (progress: number) => void): Promise<void> {
         const assets = [
             {alias: 'bell', src: '/assets/symbols/bell.png'},
@@ -29,6 +45,7 @@ export class Loader {
 
         Assets.add(assets);
 
+        const failedAssets: String[] = [];
         let loaded: number = 0;
 
         for (const asset of assets) {
@@ -36,15 +53,21 @@ export class Loader {
                 await Assets.load(asset.alias);
 
                 loaded++;
-
-                const progress = loaded / assets.length;
-
-                await new Promise(res => setTimeout(res, 200));
-
-                onProgress?.(progress);
+                onProgress?.(loaded / assets.length);
             } catch (err) {
-                console.warn(`Failed to load asset: ${asset}`, err);
+                console.error(`Failed to load asset: ${asset.alias}`, err);
+
+                if (this.criticalAssets.includes(asset.alias)) {
+                    failedAssets.push(asset.alias);
+                }
             }
+        }
+
+        if (failedAssets.length > 0) {
+            throw new LoaderError(
+                failedAssets.join(', '),
+                `Failed to load critical assets: ${failedAssets.join(', ')}`
+            );
         }
     }
 }
