@@ -1,10 +1,12 @@
-import {Container, Graphics, Text} from "pixi.js";
+import {Assets, Container, Graphics, Text, type Texture, Sprite} from "pixi.js";
 import {ScreenManager} from "../../managers/ScreenManager.ts";
+import {LanguageManager} from "../../managers/LanguageManager.ts";
 import {gsap} from "gsap";
 
 export class SettingPanel extends Container {
     private backdrop: Graphics;
     private panel: Container;
+    private flagIcon!: Sprite;
     private closeCallback?: () => void;
 
     constructor(gameWidth: number, gameHeight: number) {
@@ -18,8 +20,6 @@ export class SettingPanel extends Container {
         });
 
         this.backdrop.eventMode = 'static';
-        this.backdrop.cursor = 'pointer';
-
 
         this.addChild(this.backdrop);
 
@@ -70,7 +70,15 @@ export class SettingPanel extends Container {
         languageText.anchor.set(0.5);
         languageText.position.set(-230,-53);
 
-        this.panel.addChild(languageText);
+        const countryFlag = this.createFlagButton(
+            Assets.get(LanguageManager.getCurrentFlag()),
+            () => {
+                const nextFlag = LanguageManager.switchLanguage();
+                this.flagIcon.texture = Assets.get(nextFlag);
+            }
+        );
+
+        this.panel.addChild(languageText, countryFlag);
 
 
         const windowText = new Text({
@@ -86,7 +94,11 @@ export class SettingPanel extends Container {
         windowText.anchor.set(0.5);
         windowText.position.set(-227, 9);
 
-        this.panel.addChild(windowText);
+        const fullscreenBtn = this.createOptionButton(Assets.get('monitor'), () => {
+            ScreenManager.toggleFullscreen();
+        });
+
+        this.panel.addChild(windowText, fullscreenBtn);
 
 
         const soundText = new Text({
@@ -104,12 +116,6 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(soundText);
 
-        const fullscreenBtn = this.createOptionButton("ON", () => {
-            ScreenManager.toggleFullscreen();
-        });
-
-        this.panel.addChild(fullscreenBtn);
-
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
 
@@ -119,7 +125,30 @@ export class SettingPanel extends Container {
         this.animateIn();
     }
 
-    private createOptionButton(label: string, callback: () => void): Container {
+    private createFlagButton(
+        texture: Texture,
+        callback: () => void
+    ): Container {
+
+        const btn = new Container();
+
+        btn.eventMode = 'static';
+        btn.cursor = 'pointer';
+
+        this.flagIcon = new Sprite(texture);
+
+        this.flagIcon.anchor.set(0.5);
+        this.flagIcon.position.set(0, -54);
+        this.flagIcon.setSize(40, 40);
+
+        btn.addChild(this.flagIcon);
+
+        btn.on('pointertap', callback);
+
+        return btn;
+    }
+
+    private createOptionButton(label: Texture, callback: () => void): Container {
 
         const btn = new Container();
 
@@ -127,24 +156,19 @@ export class SettingPanel extends Container {
         btn.cursor = 'pointer';
 
         const bg = new Graphics();
-        bg.roundRect(-50, -20, 100, 40, 10);
+        bg.roundRect(-30, -10, 60, 40, 10);
         bg.fill({ color: 0x444444 });
 
         btn.addChild(bg);
 
-        const text = new Text({
-            text: label,
-            style: {
-                fontFamily: "Arial",
-                fontSize: 20,
-                fill: 0xffffff,
-                fontWeight: "bold",
-            }
-        });
+        const icon = new Sprite(label);
 
-        text.anchor.set(0.5);
+        icon.anchor.set(0.5);
+        icon.position.set(0, 11);
+        icon.setSize(40, 40);
 
-        btn.addChild(text);
+        btn.addChild(icon);
+
 
         btn.on('pointertap', callback);
         btn.on('pointerover', () => {

@@ -41,6 +41,10 @@ export class Loader {
             {alias: 'play', src: '/assets/button/play.png'},
             {alias: 'settingsBtn', src: '/assets/button/settingsButton.png'},
             {alias: 'exitBtn', src: '/assets/button/exitButton.png'},
+            {alias: 'monitor', src: '/assets/icon/monitor.png'},
+            {alias: 'Ukrainian', src: '/assets/icon/UkrainianFlag.png'},
+            {alias: 'USA', src: '/assets/icon/FlagUSA.png'},
+            {alias: 'Germany', src: '/assets/icon/FlagGermany.png'},
         ];
 
         Assets.add(assets);
