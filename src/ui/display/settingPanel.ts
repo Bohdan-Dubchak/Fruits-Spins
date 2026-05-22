@@ -2,12 +2,23 @@ import {Assets, Container, Graphics, Text, type Texture, Sprite} from "pixi.js";
 import {ScreenManager} from "../../managers/ScreenManager.ts";
 import {LanguageManager} from "../../managers/LanguageManager.ts";
 import {gsap} from "gsap";
+import type {Language} from "../../managers/translations.ts";
 
 export class SettingPanel extends Container {
     private backdrop: Graphics;
     private panel: Container;
     private flagIcon!: Sprite;
     private closeCallback?: () => void;
+
+    // Текстові елементи які потрібно оновлювати
+    private titleText!: Text;
+    private languageText!: Text;
+    private windowText!: Text;
+    private soundText!: Text;
+    private closeButtonText!: Text;
+
+    // Callback для зміни мови
+    private languageChangeCallback: (language: Language) => void;
 
     constructor(gameWidth: number, gameHeight: number) {
         super();
@@ -42,8 +53,9 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(panelBg);
 
-        const title = new Text({
-            text: "НАЛАШТУВАННЯ",
+        // Заголовок з перекладом
+        this.titleText = new Text({
+            text: LanguageManager.t('settings'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 32,
@@ -52,13 +64,14 @@ export class SettingPanel extends Container {
             }
         });
 
-        title.anchor.set(0.5);
-        title.position.set(0, -130);
+        this.titleText.anchor.set(0.5);
+        this.titleText.position.set(0, -130);
 
-        this.panel.addChild(title);
+        this.panel.addChild(this.titleText);
 
-        const languageText = new Text({
-            text: "Мова",
+        // Текст "Мова" з перекладом
+        this.languageText = new Text({
+            text: LanguageManager.t('language'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 25,
@@ -67,8 +80,8 @@ export class SettingPanel extends Container {
             }
         })
 
-        languageText.anchor.set(0.5);
-        languageText.position.set(-230,-53);
+        this.languageText.anchor.set(0.5);
+        this.languageText.position.set(-230,-53);
 
         const countryFlag = this.createFlagButton(
             Assets.get(LanguageManager.getCurrentFlag()),
@@ -78,11 +91,11 @@ export class SettingPanel extends Container {
             }
         );
 
-        this.panel.addChild(languageText, countryFlag);
+        this.panel.addChild(this.languageText, countryFlag);
 
-
-        const windowText = new Text({
-            text: 'Екран',
+        // Текст "Екран" з перекладом
+        this.windowText = new Text({
+            text: LanguageManager.t('screen'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 25,
@@ -91,18 +104,18 @@ export class SettingPanel extends Container {
             }
         })
 
-        windowText.anchor.set(0.5);
-        windowText.position.set(-227, 9);
+        this.windowText.anchor.set(0.5);
+        this.windowText.position.set(-227, 9);
 
         const fullscreenBtn = this.createOptionButton(Assets.get('monitor'), () => {
             ScreenManager.toggleFullscreen();
         });
 
-        this.panel.addChild(windowText, fullscreenBtn);
+        this.panel.addChild(this.windowText, fullscreenBtn);
 
-
-        const soundText = new Text({
-            text: 'Звук',
+        // Текст "Звук" з перекладом
+        this.soundText = new Text({
+            text: LanguageManager.t('sound'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 25,
@@ -111,18 +124,33 @@ export class SettingPanel extends Container {
             }
         });
 
-        soundText.anchor.set(0.5);
-        soundText.position.set(-234, 71);
+        this.soundText.anchor.set(0.5);
+        this.soundText.position.set(-234, 71);
 
-        this.panel.addChild(soundText);
+        this.panel.addChild(this.soundText);
 
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
+
+        // Підписуємося на зміни мови
+        this.languageChangeCallback = () => this.updateTexts();
+        LanguageManager.addListener(this.languageChangeCallback);
 
         // Початкова анімація
         this.alpha = 0;
         this.panel.scale.set(0.5);
         this.animateIn();
+    }
+
+    /**
+     * Оновити всі тексти при зміні мови
+     */
+    private updateTexts(): void {
+        this.titleText.text = LanguageManager.t('settings');
+        this.languageText.text = LanguageManager.t('language');
+        this.windowText.text = LanguageManager.t('screen');
+        this.soundText.text = LanguageManager.t('sound');
+        this.closeButtonText.text = LanguageManager.t('close');
     }
 
     private createFlagButton(
@@ -193,8 +221,9 @@ export class SettingPanel extends Container {
         bg.fill({ color: 0xff4444 });
         btn.addChild(bg);
 
-        const text = new Text({
-            text: "ЗАКРИТИ",
+        // Зберігаємо посилання на текст кнопки
+        this.closeButtonText = new Text({
+            text: LanguageManager.t('close'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 18,
@@ -202,8 +231,8 @@ export class SettingPanel extends Container {
                 fontWeight: "bold",
             }
         });
-        text.anchor.set(0.5);
-        btn.addChild(text);
+        this.closeButtonText.anchor.set(0.5);
+        btn.addChild(this.closeButtonText);
 
         btn.on('pointerdown', () => {
             gsap.to(btn.scale, {
@@ -273,5 +302,11 @@ export class SettingPanel extends Container {
 
     public onClose(callback: () => void): void {
         this.closeCallback = callback;
+    }
+
+    public destroy(): void {
+        // Відписуємося від змін мови перед знищенням
+        LanguageManager.removeListener(this.languageChangeCallback);
+        super.destroy();
     }
 }

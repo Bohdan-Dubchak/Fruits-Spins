@@ -1,4 +1,6 @@
 import {Assets, Container, Rectangle, Sprite, Text, TextStyle} from "pixi.js";
+import {LanguageManager} from "../../managers/LanguageManager.ts";
+import type {Language} from "../../managers/translations.ts";
 import {gsap} from "gsap";
 
 export class ExitBtn extends Container {
@@ -7,6 +9,8 @@ export class ExitBtn extends Container {
     private buttonText: Text;
     private buttonContainer: Container;
     private bg: Sprite;
+
+    private languageChangeCallback: (language: Language) => void;
 
     constructor() {
         super();
@@ -30,7 +34,7 @@ export class ExitBtn extends Container {
         });
 
         this.buttonText = new Text({
-            text: 'Вихід',
+            text: LanguageManager.t('exit'),
             style: textStyle,
         })
 
@@ -45,11 +49,18 @@ export class ExitBtn extends Container {
 
         this.addChild(this.buttonContainer);
 
+        this.languageChangeCallback = () => this.updateText();
+        LanguageManager.addListener(this.languageChangeCallback);
+
         this.updateHitArea();
 
         this.on('pointerdown', () => this.handleDown());
         this.on('pointerup', () => this.handleUp());
         this.on('pointerupoutside', () => this.handleUpOutside());
+    }
+
+    private updateText(): void {
+        this.buttonText.text = LanguageManager.t('exit');
     }
 
     private handleDown(): void {
@@ -97,6 +108,8 @@ export class ExitBtn extends Container {
     public destroy(): void {
         gsap.killTweensOf(this.buttonContainer.scale);
         this.removeAllListeners();
+        super.destroy();
+        LanguageManager.removeListener(this.languageChangeCallback);
         super.destroy();
     }
 }

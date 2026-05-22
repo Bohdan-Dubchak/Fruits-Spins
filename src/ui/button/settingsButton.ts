@@ -1,5 +1,7 @@
 import {Assets, Container, Rectangle, Sprite, TextStyle, Text} from "pixi.js";
 import {gsap} from "gsap";
+import {LanguageManager} from "../../managers/LanguageManager.ts";
+import type {Language} from "../../managers/translations.ts";
 
 export class SettingsBtn extends Container {
     private readonly originalScaleX: number;
@@ -9,6 +11,9 @@ export class SettingsBtn extends Container {
     private buttonContainer: Container;
     private isAnimating: boolean = false;
     private readonly onClick: () => void;
+
+    // Callback для зміни мови
+    private languageChangeCallback: (language: Language) => void;
 
     constructor(onClick: () => void) {
         super();
@@ -32,8 +37,9 @@ export class SettingsBtn extends Container {
             fill: '#f8c035',
         });
 
+        // Використовуємо переклад замість захардкодженого тексту
         this.buttonText = new Text({
-            text: 'НАЛАШТУВАННЯ',
+            text: LanguageManager.t('settings'),
             style: textStyle
         })
 
@@ -53,6 +59,15 @@ export class SettingsBtn extends Container {
         this.on('pointerdown', () => this.handleDown());
         this.on('pointerup', () => this.handleUp());
         this.on('pointerupoutside', () => this.handleUpOutside());
+
+        // Підписуємося на зміни мови
+        this.languageChangeCallback = () => this.updateText();
+        LanguageManager.addListener(this.languageChangeCallback);
+    }
+
+     // Оновити текст кнопки при зміні мови
+    private updateText(): void {
+        this.buttonText.text = LanguageManager.t('settings');
     }
 
     private handleDown(): void {
@@ -112,6 +127,8 @@ export class SettingsBtn extends Container {
     public destroy(): void {
         gsap.killTweensOf(this.buttonContainer.scale);
         this.removeAllListeners();
+        // Відписуємося від змін мови перед знищенням
+        LanguageManager.removeListener(this.languageChangeCallback);
         super.destroy();
     }
 }
