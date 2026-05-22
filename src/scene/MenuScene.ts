@@ -2,10 +2,12 @@ import {Assets, Container, Sprite} from "pixi.js";
 import {GAME_CONFIG} from "../config/game.ts";
 import {PlayButton} from "../ui/button/playButton.ts";
 import {SettingsBtn} from "../ui/button/settingsButton.ts";
+import {ExitBtn} from "../ui/button/exitButton.ts";
 
 export class MenuScene extends Container {
     private playBtn: PlayButton;
     private settingsBtn: SettingsBtn;
+    private exitBtn: ExitBtn;
 
     constructor(startCallback: () => void, onSettingsClick: () => void) {
         super();
@@ -22,6 +24,10 @@ export class MenuScene extends Container {
         this.settingsBtn = new SettingsBtn(onSettingsClick);
         this.settingsBtn.position.set(533, 290);
 
-        this.addChild(bg, this.playBtn, this.settingsBtn);
+        this.exitBtn = new ExitBtn();
+        this.exitBtn.position.set(533, 387);
+
+
+        this.addChild(bg, this.playBtn, this.settingsBtn, this.exitBtn);
     }
 }

@@ -40,7 +40,7 @@ export class Loader {
             {alias: 'MenuFon', src: '/assets/Fons/MenuFon.png'},
             {alias: 'play', src: '/assets/button/play.png'},
             {alias: 'settingsBtn', src: '/assets/button/settingsButton.png'},
-            {alias: 'exitBtn', src: '/assets/button/exitButton.png'},
+            {alias: 'exiBtn', src: '/assets/button/exitButton.png'},
             {alias: 'monitor', src: '/assets/icon/monitor.png'},
             {alias: 'Ukrainian', src: '/assets/icon/UkrainianFlag.png'},
             {alias: 'USA', src: '/assets/icon/FlagUSA.png'},
