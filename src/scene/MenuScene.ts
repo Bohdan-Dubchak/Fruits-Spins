@@ -2,7 +2,7 @@ import {Assets, Container, Sprite} from "pixi.js";
 import {GAME_CONFIG} from "../config/game.ts";
 import {PlayButton} from "../ui/button/playButton.ts";
 import {SettingsBtn} from "../ui/button/settingsButton.ts";
-import {ExitBtn} from "../ui/button/exit.ts";
+import {ExitBtn} from "../ui/button/exitButton.ts";
 
 export class MenuScene extends Container {
     private playBtn: PlayButton;
@@ -24,7 +24,7 @@ export class MenuScene extends Container {
         this.settingsBtn = new SettingsBtn(onSettingsClick);
         this.settingsBtn.position.set(533, 290);
 
-        this.exitBtn = new ExitBtn(startCallback);
+        this.exitBtn = new ExitBtn();
         this.exitBtn.position.set(533, 387);
 
 
