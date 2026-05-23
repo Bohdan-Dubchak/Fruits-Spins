@@ -1,6 +1,7 @@
 import {ReelContainer} from "../../reels/ReelsContainer.ts";
 import {WeightedSpinGenerator} from "../engine/WeightedSpinGenerator.ts";
 import {WalletManager} from "../wallet/WalletManager.ts";
+import {BetManager} from "../bet/BetManager.ts";
 
 export class SpinManager {
     private isAutoSpinActive: boolean = false;
@@ -9,6 +10,7 @@ export class SpinManager {
     private reelsContainer: ReelContainer;
     private spinGenerator: WeightedSpinGenerator;
     private wallet: WalletManager;
+    private betManager: BetManager;
     private onWinCheck: (matrix: string[][]) => void; // ← просто string[][]
     private onBalanceUpdate: () => void;
 
@@ -16,12 +18,14 @@ export class SpinManager {
         reelsContainer: ReelContainer,
         spinGenerator: WeightedSpinGenerator,
         wallet: WalletManager,
+        betManager: BetManager,
         onWinCheck: (matrix: string[][]) => void, // ← просто string[][]
         onBalanceUpdate: () => void
     ) {
         this.reelsContainer = reelsContainer;
         this.spinGenerator = spinGenerator;
         this.wallet = wallet;
+        this.betManager = betManager;
         this.onWinCheck = onWinCheck;
         this.onBalanceUpdate = onBalanceUpdate;
     }
@@ -33,6 +37,8 @@ export class SpinManager {
             return;
         }
         if (this.isCheckingWin) return;
+
+        this.betManager.setSpinning(true);
 
         this.wallet.spendBet();
         this.onBalanceUpdate();
@@ -49,6 +55,7 @@ export class SpinManager {
             this.onWinCheck(realMatrix);
 
             this.isCheckingWin = false;
+            this.betManager.setSpinning(false);
 
             if (this.isAutoSpinActive) {
                 setTimeout(() => this.executeSpin(), 500);
