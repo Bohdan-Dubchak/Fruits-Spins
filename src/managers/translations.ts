@@ -11,6 +11,8 @@ export type Translations = {
     info: string;
     bet: string;
     win: string;
+    balance: string;
+    winMessage: string;
 };
 
 export const translations: Record<Language, Translations> = {
@@ -24,8 +26,11 @@ export const translations: Record<Language, Translations> = {
         exit: 'ЗАКРИТИ',
         menuSettings: 'НАЛАШТУВАННЯ',
         info: 'ІНФОРМАЦІЯ',
-        bet: 'Ставка',
-        win: 'Останній виграш'
+        bet: 'Ставка:',
+        win: 'Останній виграш:',
+        balance: `Баланс: `,
+
+        winMessage: 'ВИГРАШ'
     },
 
     en: {
@@ -37,8 +42,11 @@ export const translations: Record<Language, Translations> = {
         exit: 'EXIT',
         menuSettings: 'SETTINGS',
         info: 'Information',
-        bet: 'bet',
-        win: 'Last win'
+        bet: 'Bet:',
+        win: 'Last win:',
+        balance: `Balance: `,
+
+        winMessage: 'WIN'
     },
 
     de: {
@@ -50,7 +58,10 @@ export const translations: Record<Language, Translations> = {
         exit: 'LIESCHEN',
         menuSettings: 'EINSTELLUNGEN',
         info: 'Information',
-        bet: 'Wetten',
-        win: 'Letzter Sieg'
+        bet: 'Wetten:',
+        win: 'Letzter Sieg:',
+        balance: 'Gleichgewicht: ',
+
+        winMessage: 'GEWINN',
     }
 };
