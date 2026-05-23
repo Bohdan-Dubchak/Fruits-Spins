@@ -31,7 +31,7 @@ export class SettingsBtn extends Container {
         this.bg.setSize(270, 87);
 
         const textStyle = new TextStyle({
-            fontFamily: 'Arial',
+            fontFamily: 'Viga',
             fontSize: 25,
             fontWeight: 'bold',
             fill: '#f8c035',
