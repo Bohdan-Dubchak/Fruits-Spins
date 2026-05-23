@@ -121,6 +121,7 @@ export class GameScene extends Container {
             this.reelsContainer,
             this.spinGenerator,
             this.wallet,
+            this.betManager,
             (matrix) => {
                 const winAmount = this.winHandler.handleWin(matrix, this.wallet.getBet());
                 this.infoPanelManager.updateLastWin(winAmount);
