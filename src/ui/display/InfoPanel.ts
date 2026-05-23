@@ -1,10 +1,17 @@
 import { Container, Graphics, Text } from "pixi.js";
+import {LanguageManager} from "../../managers/LanguageManager.ts";
+import type {Language} from "../../managers/translations.ts";
 import { gsap } from "gsap";
 
 export class InfoPanel extends Container {
     private backdrop: Graphics;
     private panel: Container;
+    private title!: Text;
+    private textClose!: Text;
+    private betText!: Text;
+    private winText!: Text;
     private closeCallback?: () => void;
+    private languageChangeCallback: (language: Language) => void;
 
     constructor(
         bet: number,
@@ -45,7 +52,7 @@ export class InfoPanel extends Container {
 
 
         const title = new Text({
-            text: "ІНФОРМАЦІЯ",
+            text: LanguageManager.t('info'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 32,
@@ -60,7 +67,7 @@ export class InfoPanel extends Container {
         this.panel.addChild(title);
 
         const balanceText = new Text({
-            text: `Баланс: ${balance.toFixed(2)} ₴`,
+            text: `${LanguageManager.t('balance')} ${balance.toFixed(2)} ₴`,
             style: {
                 fontFamily: "Arial",
                 fontSize: 24,
@@ -74,7 +81,7 @@ export class InfoPanel extends Container {
         this.panel.addChild(balanceText);
 
         const betText = new Text({
-            text: `Ставка: ${bet.toFixed(2)} ₴`,
+            text: `${LanguageManager.t('bet')}  ${bet.toFixed(2)} ₴`,
             style: {
                 fontFamily: "Arial",
                 fontSize: 24,
@@ -88,7 +95,7 @@ export class InfoPanel extends Container {
         this.panel.addChild(betText);
 
         const winText = new Text({
-            text: `Останній виграш: ${winAmount.toFixed(2)} ₴`,
+            text: `${LanguageManager.t('win')}  ${winAmount.toFixed(2)} ₴`,
             style: {
                 fontFamily: "Arial",
                 fontSize: 24,
@@ -109,6 +116,16 @@ export class InfoPanel extends Container {
         this.alpha = 0;
         this.panel.scale.set(0.5);
         this.animateIn();
+
+        this.languageChangeCallback = () => this.updateText();
+        LanguageManager.addListener(this.languageChangeCallback);
+    }
+
+    private updateText(): void {
+        this.title.text = LanguageManager.t('info');
+        this.textClose.text = LanguageManager.t('close');
+        this.betText.text = LanguageManager.t('bet');
+        this.winText.text = LanguageManager.t('win');
     }
 
     private createCloseButton(): Container {
@@ -122,8 +139,8 @@ export class InfoPanel extends Container {
         bg.fill({ color: 0xff4444 });
         btn.addChild(bg);
 
-        const text = new Text({
-            text: "ЗАКРИТИ",
+        const textClose = new Text({
+            text: LanguageManager.t('close'),
             style: {
                 fontFamily: "Arial",
                 fontSize: 18,
@@ -131,8 +148,8 @@ export class InfoPanel extends Container {
                 fontWeight: "bold",
             }
         });
-        text.anchor.set(0.5);
-        btn.addChild(text);
+        textClose.anchor.set(0.5);
+        btn.addChild(textClose);
 
         btn.on('pointerdown', () => {
             gsap.to(btn.scale, {
@@ -190,5 +207,12 @@ export class InfoPanel extends Container {
 
     public onClose(callback: () => void): void {
         this.closeCallback = callback;
+    }
+
+    public destroy(): void {
+        gsap.killTweensOf(this.panel.scale);
+        this.removeAllListeners();
+        LanguageManager.removeListener(this.languageChangeCallback);
+        super.destroy();
     }
 }
