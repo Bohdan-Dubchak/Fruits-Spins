@@ -15,7 +15,7 @@ export class HUD extends Container {
     private create(balance: number, bet: number): void {
 
         const style = new TextStyle({
-            fontFamily: "Arial",
+            fontFamily: "Viga",
             fontSize: 40,
             fill: "#ffffff",
             fontWeight: "bold",
@@ -34,8 +34,8 @@ export class HUD extends Container {
         this.balanceValue.anchor.set(0.5);
         this.betValue.anchor.set(0.5);
 
-        this.balanceValue.position.set(171, 551);
-        this.betValue.position.set(515, 541);
+        this.balanceValue.position.set(171, 547);
+        this.betValue.position.set(515, 538);
 
         this.addChild(this.balanceValue, this.betValue);
     }

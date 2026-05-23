@@ -23,14 +23,19 @@ export class App {
             await this.app.init({
                 width: GAME_CONFIG.WIDTH,
                 height: GAME_CONFIG.HEIGHT,
+                resolution: window.devicePixelRatio,
+                autoDensity: true,
                 backgroundColor: '#000000',
             });
 
             this.app.canvas.style.borderRadius = '20px'
 
+
             document.body.appendChild(this.app.canvas);
 
             await Loader.load();
+
+            await this.loadFonts();
 
             this.sceneManager = new SceneManager(this.app.stage);
 
@@ -46,6 +51,10 @@ export class App {
             console.error('Failed to initialize game:', err);
         }
 
+    }
+
+    private async loadFonts() {
+        await document.fonts.load('150px "Bebas"');
     }
 
     public async showMenu() {

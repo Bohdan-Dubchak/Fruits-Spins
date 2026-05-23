@@ -53,7 +53,7 @@ export class GameScene extends Container {
     }
 
     private createBackgroundImage(): void {
-        const texture = Assets.get("/assets/Fons/backFon.png");
+        const texture = Assets.get("/assets/Fon/backFon.png");
         const sprite = new Sprite(texture);
 
         sprite.width = GAME_CONFIG.WIDTH;
