@@ -57,7 +57,7 @@ export class SettingPanel extends Container {
         this.titleText = new Text({
             text: LanguageManager.t('settings'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 32,
                 fill: 0xffd700,
                 fontWeight: "bold",
@@ -73,7 +73,7 @@ export class SettingPanel extends Container {
         this.languageText = new Text({
             text: LanguageManager.t('language'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 25,
                 fill: 0xffd700,
                 fontWeight: "bold",
@@ -97,7 +97,7 @@ export class SettingPanel extends Container {
         this.windowText = new Text({
             text: LanguageManager.t('screen'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 25,
                 fill: 0xffd700,
                 fontWeight: "bold",
@@ -117,7 +117,7 @@ export class SettingPanel extends Container {
         this.soundText = new Text({
             text: LanguageManager.t('sound'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 25,
                 fill: 0xffd700,
                 fontWeight: "bold",
@@ -225,8 +225,8 @@ export class SettingPanel extends Container {
         this.closeButtonText = new Text({
             text: LanguageManager.t('close'),
             style: {
-                fontFamily: "Arial",
-                fontSize: 18,
+                fontFamily: "Viga",
+                fontSize: 20,
                 fill: 0xffffff,
                 fontWeight: "bold",
             }
