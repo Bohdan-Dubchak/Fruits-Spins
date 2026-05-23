@@ -27,7 +27,7 @@ export class ExitBtn extends Container {
         this.bg.setSize(270, 80);
 
         const textStyle = new TextStyle({
-            fontFamily: 'Arial',
+            fontFamily: 'Viga',
             fontSize: 25,
             fill: '#f8c035',
             fontWeight: 'bold',
