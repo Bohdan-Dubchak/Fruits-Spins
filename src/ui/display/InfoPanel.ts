@@ -54,7 +54,7 @@ export class InfoPanel extends Container {
         const title = new Text({
             text: LanguageManager.t('info'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 32,
                 fill: 0xffd700,
                 fontWeight: "bold",
@@ -69,7 +69,7 @@ export class InfoPanel extends Container {
         const balanceText = new Text({
             text: `${LanguageManager.t('balance')} ${balance.toFixed(2)} ₴`,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 24,
                 fill: 0xffffff,
             }
@@ -83,7 +83,7 @@ export class InfoPanel extends Container {
         const betText = new Text({
             text: `${LanguageManager.t('bet')}  ${bet.toFixed(2)} ₴`,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 24,
                 fill: 0xffffff,
             }
@@ -97,7 +97,7 @@ export class InfoPanel extends Container {
         const winText = new Text({
             text: `${LanguageManager.t('win')}  ${winAmount.toFixed(2)} ₴`,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 24,
                 fill: winAmount > 0 ? 0x00ff00 : 0xffffff,
             }
@@ -142,7 +142,7 @@ export class InfoPanel extends Container {
         const textClose = new Text({
             text: LanguageManager.t('close'),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "Viga",
                 fontSize: 18,
                 fill: 0xffffff,
                 fontWeight: "bold",
