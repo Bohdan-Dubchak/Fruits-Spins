@@ -6,6 +6,7 @@ import {SceneManager} from "../animations/Transitioning.ts";
 import {MenuScene} from "../scene/MenuScene.ts";
 import {GameScene} from "../scene/GameScene.ts";
 import {SettingPanelManager} from "../managers/settingPanelManager.ts";
+import {ResolutionManager} from "../config/resolution.ts";
 
 export class App {
 
@@ -23,7 +24,7 @@ export class App {
             await this.app.init({
                 width: GAME_CONFIG.WIDTH,
                 height: GAME_CONFIG.HEIGHT,
-                resolution: window.devicePixelRatio,
+                resolution: ResolutionManager.getOptimalResolution(),
                 autoDensity: true,
                 backgroundColor: '#000000',
             });

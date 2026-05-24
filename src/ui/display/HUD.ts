@@ -17,7 +17,7 @@ export class HUD extends Container {
         const style = new TextStyle({
             fontFamily: "Viga",
             fontSize: 40,
-            fill: "#ffffff",
+            fill: "#b1adad",
             fontWeight: "bold",
         });
 
