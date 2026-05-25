@@ -2,6 +2,7 @@ import {Assets, Container, Rectangle, Sprite, TextStyle, Text} from "pixi.js";
 import {gsap} from "gsap";
 import {LanguageManager} from "../../managers/LanguageManager.ts";
 import type {Language} from "../../managers/translations.ts";
+import {SoundManager} from "../../audio/SoundManager.ts";
 
 export class SettingsBtn extends Container {
     private readonly originalScaleX: number;
@@ -11,12 +12,15 @@ export class SettingsBtn extends Container {
     private buttonContainer: Container;
     private isAnimating: boolean = false;
     private readonly onClick: () => void;
+    private soundManager: SoundManager;
 
     // Callback для зміни мови
     private languageChangeCallback: (language: Language) => void;
 
-    constructor(onClick: () => void) {
+    constructor(onClick: () => void, soundManager: SoundManager) {
         super();
+
+        this.soundManager = soundManager;
 
         this.onClick = onClick;
         this.eventMode = 'static';
@@ -71,6 +75,7 @@ export class SettingsBtn extends Container {
     }
 
     private handleDown(): void {
+        this.soundManager.play('button');
         if (this.isAnimating) return;
 
         gsap.killTweensOf(this.buttonContainer.scale);
