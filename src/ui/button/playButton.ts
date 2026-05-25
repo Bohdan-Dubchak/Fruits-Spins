@@ -1,15 +1,19 @@
 import { Assets, Container, Sprite, Rectangle } from "pixi.js";
+import {SoundManager} from "../../audio/SoundManager.ts";
 import { gsap } from "gsap";
 
 export class PlayButton extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
     private bg: Sprite;
+    private soundManager: SoundManager;
 
     private handleKeyDownBound: (e: KeyboardEvent) => void;
 
-    constructor(onClick: () => void) {
+    constructor(onClick: () => void, soundManager: SoundManager) {
         super();
+
+        this.soundManager = soundManager;
 
         this.eventMode = 'static';
         this.cursor = 'pointer';
@@ -38,6 +42,7 @@ export class PlayButton extends Container {
     }
 
     private handleClick(onClick: () => void): void {
+        this.soundManager.play('button');
         gsap.killTweensOf(this.bg.scale);
 
         const tl = gsap.timeline();
