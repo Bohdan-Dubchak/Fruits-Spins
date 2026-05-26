@@ -13,6 +13,7 @@ import { UIFactory } from "../ui/UIFactory.ts";
 import { ReelsOverlay } from "../reels/ReelsOverlay.ts";
 import {InfoPanelManager} from "../managers/InfoPanelManager.ts";
 import {HomeBtn} from "../ui/button/homeButton.ts";
+import {SoundManager} from "../audio/SoundManager.ts";
 
 export class GameScene extends Container {
     private reelsContainer: ReelContainer;
@@ -27,6 +28,7 @@ export class GameScene extends Container {
     private betManager: BetManager;
     private winHandler: WinHandler;
     private infoPanelManager: InfoPanelManager;
+    private soundManager: SoundManager;
 
     private homeBtn: HomeBtn;
 
@@ -34,6 +36,9 @@ export class GameScene extends Container {
         super();
         this.rng = rng;
         this.spinGenerator = new WeightedSpinGenerator(this.rng);
+
+        this.soundManager = new SoundManager();
+        // this.soundManager.play('music')
 
         this.createBackgroundImage();
         this.reelsContainer = this.createReels();
@@ -44,6 +49,7 @@ export class GameScene extends Container {
         this.betManager = this.createBetManager();
         this.winHandler = this.createWinHandler();
         this.spinManager = this.createSpinManager();
+        this.reelsContainer.setOnReelStop(() => this.soundManager.play('reelStop'));
         this.infoPanelManager = this.createInfoPanelManager();
 
         this.homeBtn = new HomeBtn(onHomeClick);
@@ -53,7 +59,7 @@ export class GameScene extends Container {
     }
 
     private createBackgroundImage(): void {
-        const texture = Assets.get("/assets/Fon/backFon.png");
+        const texture = Assets.get("/assets/Fon/backFon.webp");
         const sprite = new Sprite(texture);
 
         sprite.width = GAME_CONFIG.WIDTH;
@@ -64,7 +70,7 @@ export class GameScene extends Container {
 
     private createReels(): ReelContainer {
         const reelsContainer = new ReelContainer(GAME_CONFIG.REELS_COUNT, this.rng);
-        reelsContainer.position.set(165, 80);
+        reelsContainer.position.set(162, 79);
         this.addChild(reelsContainer);
         return reelsContainer;
     }
@@ -125,10 +131,16 @@ export class GameScene extends Container {
             (matrix) => {
                 const winAmount = this.winHandler.handleWin(matrix, this.wallet.getBet());
                 this.infoPanelManager.updateLastWin(winAmount);
+
+                if (winAmount > 0) {
+                   this.soundManager.play('win');
+                   if (winAmount > 500) {
+                       this.soundManager.play('bigWin');
+                   }
+                   return winAmount;
+                }
             },
-            () => {
-                this.hud.updateBalance(this.wallet.getBalance());
-            }
+            () => { this.hud.updateBalance(this.wallet.getBalance()); },
         );
     }
 
@@ -160,6 +172,7 @@ export class GameScene extends Container {
     public override destroy(options?: any): void {
         this.betManager.destroy();
         this.infoPanelManager.destroy();
+        this.soundManager.destroy();
 
         this.reelsContainer.destroy();
         this.removeChildren();

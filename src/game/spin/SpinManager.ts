@@ -20,7 +20,7 @@ export class SpinManager {
         wallet: WalletManager,
         betManager: BetManager,
         onWinCheck: (matrix: string[][]) => void, // ← просто string[][]
-        onBalanceUpdate: () => void
+        onBalanceUpdate: () => void,
     ) {
         this.reelsContainer = reelsContainer;
         this.spinGenerator = spinGenerator;

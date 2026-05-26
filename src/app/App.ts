@@ -71,7 +71,7 @@ export class App {
 
     public async startGame() {
         const rng = new RNG(Date.now());
-        const game = new GameScene(rng, () => this.showMenu());
+            const game = new GameScene(rng, () => this.showMenu());
 
         if (!this.sceneManager) return;
 

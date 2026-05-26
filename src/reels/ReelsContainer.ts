@@ -38,6 +38,7 @@ export class ReelContainer extends Container {
         for (let i = 0; i < this.reels.length; i++) {
             await new Promise(resolve => setTimeout(resolve, 1500 + i * 300));
             this.reels[i].stop();
+
         }
 
         // Чекаємо поки всі точно зупиняться
@@ -58,6 +59,10 @@ export class ReelContainer extends Container {
                 }
             }, 50); // Перевіряємо кожні 50ms
         });
+    }
+
+    public setOnReelStop(callback: () => void): void {
+        this.reels.forEach(reel => reel.setOnStop(callback));
     }
 
     public getReels(): Reel[] {
