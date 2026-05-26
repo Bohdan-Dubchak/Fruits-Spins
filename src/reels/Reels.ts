@@ -31,6 +31,9 @@ export class Reel extends Container {
 
     private animations!: ReelAnimations;
 
+    private onStop?: () => void
+    private isSnapping = false;
+
     constructor(rng: RNG) {
         super();
         this.rng = rng;
@@ -64,13 +67,13 @@ export class Reel extends Container {
      */
     private loadTextures(): void {
         this.symbolMap = [
-            {id: 'bell', texture: Assets.get("bell")},
-            {id: 'cherry', texture: Assets.get("cherry"), scale: 1.2},
-            {id: 'grapes', texture: Assets.get("grapes")},
-            {id: 'lemon', texture: Assets.get("lemon"), scale: 1.5},
-            {id: 'orange', texture: Assets.get("orange")},
-            {id: 'plum', texture: Assets.get("plum")},
-            {id: 'seven', texture: Assets.get("seven")},
+            {id: 'bell', texture: Assets.get("bell"), scale: 1},
+            {id: 'cherry', texture: Assets.get("cherry"), scale: 1},
+            {id: 'grapes', texture: Assets.get("grapes"), scale: 1},
+            {id: 'lemon', texture: Assets.get("lemon"), scale: 1.05},
+            {id: 'orange', texture: Assets.get("orange"), scale: 1},
+            {id: 'plum', texture: Assets.get("plum"), scale: 0.9},
+            {id: 'seven', texture: Assets.get("seven"), scale: 1},
         ]
     }
 
@@ -144,11 +147,8 @@ export class Reel extends Container {
     private update(): void {
         this.animations.update(this.speed, this.targetSpeed);
 
-        if (this.speed < this.targetSpeed) {
-            this.speed += 0.5;
-        } else if (this.speed > this.targetSpeed) {
-            this.speed -= 0.5;
-        }
+        const easingFactor = 0.10;
+        this.speed += (this.targetSpeed - this.speed) * easingFactor;
 
         for (const symbol of this.symbols) {
             symbol.y += this.speed;
@@ -174,24 +174,42 @@ export class Reel extends Container {
             }
         }
 
-        if (this.targetSpeed === 0 && this.speed < 0.5) {
-            this.snapToGrid();
+        if (this.targetSpeed === 0 && this.speed < 0.5 && this.isSpinning) {
+            this.isSnapping = true;
             this.speed = 0;
-            this.isSpinning = false;
+        }
+
+        if (this.isSnapping) {
+            let allAligned = true;
+            const totalHeight = this.symbolSize * this.symbols.length;
+
+            for (const symbol of this.symbols) {
+
+                if (symbol.y < 0) symbol.y += totalHeight;
+                if (symbol.y >= totalHeight) symbol.y -= totalHeight;
+
+                const nearest = Math.round(symbol.y / this.symbolSize) * this.symbolSize;
+                symbol.y += (nearest - symbol.y) * 0.5;
+
+                if (Math.abs(symbol.y - nearest) > 0.5) {
+                    allAligned = false;
+                }
+            }
+
+            if (allAligned) {
+                for (const symbol of this.symbols) {
+                    symbol.y = Math.round(symbol.y / this.symbolSize) * this.symbolSize;
+                }
+                this.isSnapping = false;
+                this.isSpinning = false;
+                this.onStop?.();
+            }
+            return
         }
     }
 
-    // Вирівнює всі символи по сітці після зупинки
-    private snapToGrid(): void {
-        for (const symbol of this.symbols) {
-            const remainder = symbol.y % this.symbolSize;
-
-            symbol.y -= remainder;
-
-            if (remainder > this.symbolSize / 2) {
-                symbol.y += this.symbolSize;
-            }
-        }
+    public setOnStop(callback: () => void): void {
+        this.onStop = callback;
     }
 
     //  Повертає ID середнього видимого символа (row 1)
