@@ -2,8 +2,8 @@ import {Howl, Howler} from "howler";
 
 export class SoundManager {
     private sounds: Map<string, Howl> = new Map();
-    private musicVolume: number = 0.7;
-    private sfxVolume: number = 0.1;
+    private musicVolume: number = 0.4;
+    private sfxVolume: number = 0.8;
     private isMuted: boolean = false;
 
     constructor() {
@@ -20,17 +20,22 @@ export class SoundManager {
 
         // Звук обертання
         this.sounds.set('spin', new Howl({
-            src: ['/assets/audio/start.mp3'],
-            volume: this.musicVolume
+            src: ['/assets/audio/star.ogg'],
+            volume: this.sfxVolume * 0.7
         }));
 
         // Звук виграшу
         this.sounds.set('win', new Howl({
             src: ['/assets/audio/jp_mini.ogg'],
-            volume: this.musicVolume
+            volume: this.sfxVolume
         }));
 
         // Звук кнопки
+        this.sounds.set('closed', new Howl({
+            src: ['/assets/audio/closed.mp3'],
+            volume: this.sfxVolume * 0.6
+        }))
+
         this.sounds.set('button', new Howl({
             src: ['/assets/audio/button_click.ogg'],
             volume: this.sfxVolume * 0.5
@@ -39,13 +44,13 @@ export class SoundManager {
         // Звук зупинки барабану
         this.sounds.set('reelStop', new Howl({
             src: ['assets/audio/stop.mp3'],
-            volume: this.sfxVolume * 0.7
+            volume: this.sfxVolume
         }));
 
         // Великий виграш
         this.sounds.set('bigWin', new Howl({
             src: ['/assets/audio/jp_mega.ogg'],
-            volume: this.sfxVolume
+            volume: 1.0
         }))
     }
 
