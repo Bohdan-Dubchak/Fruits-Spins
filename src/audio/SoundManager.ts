@@ -11,55 +11,54 @@ export class SoundManager {
     }
 
     private loadSounds(): void {
-        // Фонова музика
+
         this.sounds.set('music', new Howl({
             src: ['/assets/audio/game.ogg'],
             loop: true,
             volume: this.musicVolume
         }));
 
-        // Звук обертання
         this.sounds.set('spin', new Howl({
-            src: ['/assets/audio/star.ogg'],
-            volume: this.sfxVolume * 0.7
+            src: ['/assets/audio/startSpin.ogg'],
+            volume: 1
         }));
 
-        // Звук виграшу
+        this.sounds.set('auto', new Howl({
+            src: ['/assets/audio/startAuto.ogg'],
+            volume: this.sfxVolume * 0.6
+        }))
+
         this.sounds.set('win', new Howl({
-            src: ['/assets/audio/jp_mini.ogg'],
+            src: ['/assets/audio/winMini.ogg'],
             volume: this.sfxVolume
         }));
 
-        // Звук кнопки
         this.sounds.set('closed', new Howl({
             src: ['/assets/audio/closed.ogg'],
             volume: this.sfxVolume * 0.5
         }))
 
         this.sounds.set('button', new Howl({
-            src: ['/assets/audio/button_click.ogg'],
+            src: ['/assets/audio/click.ogg'],
             volume: this.sfxVolume * 0.5
         }));
 
         this.sounds.set('bet', new Howl({
-            src: ['/assets/audio/betBtn.ogg'],
+            src: ['/assets/audio/bet.ogg'],
             volume: this.sfxVolume * 0.4
         }))
 
-        // Звук зупинки барабану
         this.sounds.set('reelStop', new Howl({
-            src: ['assets/audio/stop.ogg'],
+            src: ['assets/audio/stopReel.ogg'],
             volume: this.sfxVolume
         }));
 
-        // Великий виграш
         this.sounds.set('bigWin', new Howl({
-            src: ['/assets/audio/jp_mega.ogg'],
+            src: ['/assets/audio/winMega.ogg'],
             volume: 1.0
         }))
     }
 
-    // Відтворити звук
     play(soundName: string): void {
         if (!this.isMuted) {
             const sound = this.sounds.get(soundName);
@@ -69,7 +68,6 @@ export class SoundManager {
         }
     }
 
-    // Зупинити звук
     stop(soundName: string): void {
         const sound = this.sounds.get(soundName);
         if (sound) {
