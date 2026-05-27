@@ -1,16 +1,20 @@
 import {Assets, Container, Rectangle, Sprite} from "pixi.js";
+import {SoundManager} from "../../audio/SoundManager.ts";
 import {gsap} from "gsap";
 
 export class AutoSpin extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
     private bg: Sprite;
+    private soundManager: SoundManager;
 
-    constructor(onClick: () => void) {
+    constructor(onClick: () => void, soundManager: SoundManager) {
         super();
 
         this.eventMode = 'static';
         this.cursor = 'pointer';
+
+        this.soundManager = soundManager;
 
         const texture = Assets.get('autoSpin');
         this.bg = new Sprite(texture);
@@ -34,6 +38,7 @@ export class AutoSpin extends Container {
     }
 
     private handleDown(onClick: () => void): void {
+        this.soundManager.play('auto');
         gsap.killTweensOf(this.bg.scale);
 
         gsap.to(this.bg.scale, {
