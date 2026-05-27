@@ -10,19 +10,21 @@ export class SettingPanel extends Container {
     private panel: Container;
     private flagIcon!: Sprite;
     private closeCallback?: () => void;
-
-    // Текстові елементи які потрібно оновлювати
     private titleText!: Text;
     private languageText!: Text;
     private windowText!: Text;
     private musicText!: Text;
     private closeButtonText!: Text;
     private soundManager: SoundManager;
-
+    private musicOnText: Text;
+    private bg: Graphics;
     private languageChangeCallback: (language: Language) => void;
 
-    constructor(gameWidth: number, gameHeight: number, soundManager: SoundManager) {
+    constructor(gameWidth: number, gameHeight: number, soundManager: SoundManager, musicOnText: Text, bg: Graphics) {
         super();
+
+        this.musicOnText = musicOnText;
+        this.bg = bg;
 
         this.backdrop = new Graphics();
         this.backdrop.rect(0, 0, gameWidth, gameHeight);
@@ -40,7 +42,6 @@ export class SettingPanel extends Container {
         this.panel = new Container();
         this.panel.position.set(gameWidth / 2, gameHeight / 2);
 
-        // Зупиняємо propagation кліків з панелі
         this.panel.eventMode = 'static';
         this.panel.on('pointerdown', (e) => e.stopPropagation());
 
@@ -56,7 +57,6 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(panelBg);
 
-        // Заголовок з перекладом
         this.titleText = new Text({
             text: LanguageManager.t('settings'),
             style: {
@@ -72,7 +72,6 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(this.titleText);
 
-        // Текст "Мова" з перекладом
         this.languageText = new Text({
             text: LanguageManager.t('language'),
             style: {
@@ -96,7 +95,6 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(this.languageText, countryFlag);
 
-        // Текст "Екран" з перекладом
         this.windowText = new Text({
             text: LanguageManager.t('screen'),
             style: {
@@ -114,7 +112,6 @@ export class SettingPanel extends Container {
             ScreenManager.toggleFullscreen();
         });
 
-        this.panel.addChild(this.windowText, fullscreenBtn);
 
         this.musicText = new Text({
             text: LanguageManager.t('sound'),
@@ -129,22 +126,23 @@ export class SettingPanel extends Container {
         this.musicText.anchor.set(0.5);
         this.musicText.position.set(-225, 71);
 
-        this.panel.addChild(this.musicText);
+        const musicOff = this.createMusicButton(() => {
+
+        })
+
+        this.panel.addChild(this.musicText, this.windowText, fullscreenBtn, musicOff);
 
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
 
-        // Підписуємося на зміни мови
         this.languageChangeCallback = () => this.updateTexts();
         LanguageManager.addListener(this.languageChangeCallback);
 
-        // Початкова анімація
         this.alpha = 0;
         this.panel.scale.set(0.5);
         this.animateIn();
     }
 
-     // Оновити всі тексти при зміні мови
     private updateTexts(): void {
         this.titleText.text = LanguageManager.t('settings');
         this.languageText.text = LanguageManager.t('language');
@@ -208,6 +206,54 @@ export class SettingPanel extends Container {
 
         btn.on('pointerout', () => {
             bg.tint = 0xffffff;
+        });
+
+        return btn;
+    }
+
+    private createMusicButton(callback: () => void): Container {
+        const btn = new Container();
+
+        btn.eventMode = 'static';
+        btn.cursor = 'pointer';
+
+        this.bg = new Graphics();
+        this.bg.roundRect(-30, 53, 60, 40, 10);
+        this.bg.fill({ color: 0x444444 });
+
+         this.musicOnText = new Text({
+            text: 'OFF',
+            style: {
+                fontFamily: "Viga",
+                fontSize: 10,
+                fill: '#4D844D',
+            }
+        });
+
+        this.musicOnText.anchor.set(0.5);
+        this.musicOnText.setSize(28, 28);
+        this.musicOnText.position.set(0, 71);
+
+        const isPlaying = this.soundManager.isMusicPlaying();
+        this.musicOnText.text = isPlaying ? 'OFF' : 'ON';
+        this.musicOnText.style.fill = isPlaying ? '#844D4D' : '#4D844D';
+
+
+        btn.addChild(this.bg, this.musicOnText);
+
+        btn.on('pointertap', () => {
+            const isPlaying = this.soundManager.toggleMusic();
+            this.musicOnText.text = isPlaying ? 'OFF' : 'ON';
+            this.musicOnText.style.fill = isPlaying ? '#844D4D' : '#4D844D';
+            callback();
+        });
+
+        btn.on('pointerover', () => {
+            this.bg.tint = 0x666666;
+        });
+
+        btn.on('pointerout', () => {
+            this.bg.tint = 0xffffff;
         });
 
         return btn;

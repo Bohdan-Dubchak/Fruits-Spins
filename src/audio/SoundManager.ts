@@ -1,4 +1,4 @@
-import {Howl, Howler} from "howler";
+import {Howl,} from "howler";
 
 export class SoundManager {
     private sounds: Map<string, Howl> = new Map();
@@ -59,7 +59,7 @@ export class SoundManager {
         }))
     }
 
-    play(soundName: string): void {
+    public play(soundName: string): void {
         if (!this.isMuted) {
             const sound = this.sounds.get(soundName);
             if (sound && !sound.playing()) {
@@ -68,20 +68,31 @@ export class SoundManager {
         }
     }
 
-    stop(soundName: string): void {
+    public stop(soundName: string): void {
         const sound = this.sounds.get(soundName);
         if (sound) {
             sound.stop();
         }
     }
 
-    toggleMute(): boolean {
-        this.isMuted = !this.isMuted;
-        Howler.mute(this.isMuted);
-        return this.isMuted;
+    public toggleMusic(): boolean {
+        const music = this.sounds.get('music');
+        if (!music) return false;
+
+        if (music.playing()) {
+            music.stop();
+            return false;
+        } else {
+            music.play();
+            return true;
+        }
     }
 
-    destroy(): void {
+    public isMusicPlaying(): boolean {
+        return this.sounds.get('music')?.playing() ?? false;
+    }
+
+    public destroy(): void {
         this.sounds.clear();
     }
 }

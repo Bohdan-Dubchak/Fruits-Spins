@@ -13,7 +13,7 @@ export class MenuScene extends Container {
 
     constructor(startCallback: () => void, onSettingsClick: () => void, soundManager: SoundManager) {
         super();
-        // soundManager.play('music');
+
         this.soundManager = soundManager;
 
         const texture = Assets.get('MenuFon');
