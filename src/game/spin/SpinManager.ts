@@ -9,6 +9,8 @@ export class SpinManager {
 
     private reelsContainer: ReelContainer;
     private spinGenerator: WeightedSpinGenerator;
+    private onSpinStart?: () => void;
+    private onSpinEnd?: () => void;
     private wallet: WalletManager;
     private betManager: BetManager;
     private onWinCheck: (matrix: string[][]) => void; // ← просто string[][]
@@ -46,6 +48,8 @@ export class SpinManager {
         const matrix = this.spinGenerator.generateMatrix();
         this.reelsContainer.setSpinResult(matrix);
 
+        this.onSpinStart?.();
+
         await this.reelsContainer.spinAll(() => {
             if (this.reelsContainer.isAnySpinning()) return;
 
@@ -56,6 +60,7 @@ export class SpinManager {
 
             this.isCheckingWin = false;
             this.betManager.setSpinning(false);
+            this.onSpinEnd?.();
 
             if (this.isAutoSpinActive) {
                 setTimeout(() => this.executeSpin(), 500);
@@ -72,5 +77,10 @@ export class SpinManager {
 
     stopAutoSpin(): void {
         this.isAutoSpinActive = false;
+    }
+
+    public setSpinCallbacks(onStart: () => void, onEnd: () => void): void {
+        this.onSpinStart = onStart;
+        this.onSpinEnd = onEnd;
     }
 }
