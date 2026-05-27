@@ -155,7 +155,8 @@ export class GameScene extends Container {
 
     private createUI(): void {
         const uiFactory = new UIFactory(this.soundManager);
-        const uiElements = uiFactory.createGameUI(
+
+        const { elements, spinButton } = uiFactory.createGameUI(
             () => {
                 this.spinManager.executeSpin();
                 this.hud.updateBalance(this.wallet.getBalance());
@@ -165,7 +166,16 @@ export class GameScene extends Container {
             () => this.infoPanelManager.show()
         );
 
-        this.addChild(...uiElements);
+        this.spinManager.setSpinCallbacks(
+            () => {
+                spinButton.setDisabled(true);
+            },
+            () => {
+                spinButton.setDisabled(false);
+            }
+        );
+
+        this.addChild(...elements);
     }
 
     public override destroy(options?: any): void {

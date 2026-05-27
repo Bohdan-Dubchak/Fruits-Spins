@@ -198,7 +198,10 @@ export class SettingPanel extends Container {
         btn.addChild(icon);
 
 
-        btn.on('pointertap', callback);
+        btn.on('pointertap', () => {
+            this.soundManager.play('button');
+                callback();
+        });
         btn.on('pointerover', () => {
             bg.tint = 0x666666;
         });

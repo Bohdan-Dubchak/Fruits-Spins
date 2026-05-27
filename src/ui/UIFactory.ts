@@ -15,10 +15,13 @@ export class UIFactory {
         this.soundManager = soundManager;
     }
 
-    createGameUI(onSpin: () => void, onAutoSpin: () => void, betManager: BetManager, onInfo: () => void): Container[] {
+    createGameUI(onSpin: () => void,
+                 onAutoSpin: () => void,
+                 betManager: BetManager,
+                 onInfo: () => void): { elements: Container[], spinButton: SpinButton, autoSpin: AutoSpin } {
 
-        const spinButton = new SpinButton(onSpin);
-        const autoSpin = new AutoSpin(onAutoSpin);
+        const spinButton = new SpinButton(onSpin, this.soundManager);
+        const autoSpin = new AutoSpin(onAutoSpin, this.soundManager);
 
         const plusButton = new PlusBet(() => betManager.increaseBetOnce(), this.soundManager);
         this.setupBetButton(plusButton,
@@ -35,7 +38,11 @@ export class UIFactory {
         const soundBtn = new SoundButton(() => {});
         const infoBtn = new InfoBtn(onInfo, this.soundManager);
 
-        return [spinButton, autoSpin, plusButton, minusButton, soundBtn, infoBtn];
+        return {
+            elements: [spinButton, autoSpin, plusButton, minusButton, soundBtn, infoBtn],
+            spinButton,
+            autoSpin
+        };
     }
 
     private setupBetButton(button: any, onHold: () => void, onRelease: () => void): void {
