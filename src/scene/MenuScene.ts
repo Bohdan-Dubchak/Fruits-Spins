@@ -11,10 +11,10 @@ export class MenuScene extends Container {
     private exitBtn: ExitBtn;
     private soundManager: SoundManager;
 
-    constructor(startCallback: () => void, onSettingsClick: () => void) {
+    constructor(startCallback: () => void, onSettingsClick: () => void, soundManager: SoundManager) {
         super();
-
-        this.soundManager = new SoundManager();
+        // soundManager.play('music');
+        this.soundManager = soundManager;
 
         const texture = Assets.get('MenuFon');
         const bg = new Sprite(texture);
