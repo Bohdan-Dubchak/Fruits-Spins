@@ -32,13 +32,12 @@ export class GameScene extends Container {
 
     private homeBtn: HomeBtn;
 
-    constructor(rng: RNG, onHomeClick: () => void) {
+    constructor(rng: RNG, onHomeClick: () => void, soundManager: SoundManager) {
         super();
         this.rng = rng;
         this.spinGenerator = new WeightedSpinGenerator(this.rng);
 
-        this.soundManager = new SoundManager();
-        // this.soundManager.play('music')
+        this.soundManager = soundManager;
 
         this.createBackgroundImage();
         this.reelsContainer = this.createReels();
@@ -52,7 +51,7 @@ export class GameScene extends Container {
         this.reelsContainer.setOnReelStop(() => this.soundManager.play('reelStop'));
         this.infoPanelManager = this.createInfoPanelManager();
 
-        this.homeBtn = new HomeBtn(onHomeClick);
+        this.homeBtn = new HomeBtn(onHomeClick, this.soundManager);
         this.addChild(this.homeBtn);
 
         this.createUI();
@@ -149,12 +148,13 @@ export class GameScene extends Container {
             this.wallet,
             this,
             GAME_CONFIG.WIDTH,
-            GAME_CONFIG.HEIGHT
+            GAME_CONFIG.HEIGHT,
+            this.soundManager
         );
     }
 
     private createUI(): void {
-        const uiFactory = new UIFactory();
+        const uiFactory = new UIFactory(this.soundManager);
         const uiElements = uiFactory.createGameUI(
             () => {
                 this.spinManager.executeSpin();
@@ -163,7 +163,6 @@ export class GameScene extends Container {
             () => this.spinManager.toggleAutoSpin(),
             this.betManager,
             () => this.infoPanelManager.show()
-
         );
 
         this.addChild(...uiElements);
@@ -172,7 +171,6 @@ export class GameScene extends Container {
     public override destroy(options?: any): void {
         this.betManager.destroy();
         this.infoPanelManager.destroy();
-        this.soundManager.destroy();
 
         this.reelsContainer.destroy();
         this.removeChildren();

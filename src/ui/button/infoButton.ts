@@ -1,4 +1,5 @@
-import {Assets, Container, Rectangle, Sprite} from "pixi.js";
+import {Assets, Container, Rectangle, Sprite} from "pixi.js"
+import type {SoundManager} from "../../audio/SoundManager.ts";
 import {gsap} from "gsap";
 
 export class InfoBtn extends Container {
@@ -6,12 +7,15 @@ export class InfoBtn extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
     private bg: Sprite;
+    private soundManager: SoundManager;
 
-    constructor(onClick: () => void) {
+    constructor(onClick: () => void, soundManager: SoundManager) {
         super();
 
         this.eventMode = 'static';
         this.cursor = 'pointer';
+
+        this.soundManager = soundManager;
 
         const texture = Assets.get("info");
         this.bg = new Sprite(texture);
@@ -35,6 +39,7 @@ export class InfoBtn extends Container {
     }
 
     private handleDown(onClick: () => void): void {
+        this.soundManager.play('button');
         gsap.killTweensOf(this.bg.scale);
 
         gsap.to(this.bg.scale, {

@@ -7,12 +7,14 @@ import {MenuScene} from "../scene/MenuScene.ts";
 import {GameScene} from "../scene/GameScene.ts";
 import {SettingPanelManager} from "../managers/settingPanelManager.ts";
 import {ResolutionManager} from "../config/resolution.ts";
+import {SoundManager} from "../audio/SoundManager.ts";
 
 export class App {
 
     private app: Application<Renderer>;
     private sceneManager: SceneManager | null = null;
     private settingPanelManager: SettingPanelManager | null = null;
+    private soundManager: SoundManager = new SoundManager();
 
     constructor() {
         this.app = new Application();
@@ -43,7 +45,8 @@ export class App {
             this.settingPanelManager = new SettingPanelManager(
                 GAME_CONFIG.WIDTH,
                 GAME_CONFIG.HEIGHT,
-                this.app.stage
+                this.app.stage,
+                this.soundManager
             );
 
             this.showMenu();
@@ -61,7 +64,8 @@ export class App {
     public async showMenu() {
         const menu = new MenuScene(
             () => this.startGame(),
-            () => this.showSettings()
+            () => this.showSettings(),
+            this.soundManager
         );
 
         if (!this.sceneManager) return;
@@ -71,7 +75,7 @@ export class App {
 
     public async startGame() {
         const rng = new RNG(Date.now());
-            const game = new GameScene(rng, () => this.showMenu());
+            const game = new GameScene(rng, () => this.showMenu(), this.soundManager);
 
         if (!this.sceneManager) return;
 

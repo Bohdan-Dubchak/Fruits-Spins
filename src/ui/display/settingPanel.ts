@@ -3,6 +3,7 @@ import {ScreenManager} from "../../managers/ScreenManager.ts";
 import {LanguageManager} from "../../managers/LanguageManager.ts";
 import {gsap} from "gsap";
 import type {Language} from "../../managers/translations.ts";
+import {SoundManager} from "../../audio/SoundManager.ts";
 
 export class SettingPanel extends Container {
     private backdrop: Graphics;
@@ -14,13 +15,13 @@ export class SettingPanel extends Container {
     private titleText!: Text;
     private languageText!: Text;
     private windowText!: Text;
-    private soundText!: Text;
+    private musicText!: Text;
     private closeButtonText!: Text;
+    private soundManager: SoundManager;
 
-    // Callback для зміни мови
     private languageChangeCallback: (language: Language) => void;
 
-    constructor(gameWidth: number, gameHeight: number) {
+    constructor(gameWidth: number, gameHeight: number, soundManager: SoundManager) {
         super();
 
         this.backdrop = new Graphics();
@@ -29,6 +30,8 @@ export class SettingPanel extends Container {
             color: 0x000000,
             alpha: 0.7
         });
+
+        this.soundManager = soundManager
 
         this.backdrop.eventMode = 'static';
 
@@ -113,8 +116,7 @@ export class SettingPanel extends Container {
 
         this.panel.addChild(this.windowText, fullscreenBtn);
 
-        // Текст "Звук" з перекладом
-        this.soundText = new Text({
+        this.musicText = new Text({
             text: LanguageManager.t('sound'),
             style: {
                 fontFamily: "Viga",
@@ -124,10 +126,10 @@ export class SettingPanel extends Container {
             }
         });
 
-        this.soundText.anchor.set(0.5);
-        this.soundText.position.set(-234, 71);
+        this.musicText.anchor.set(0.5);
+        this.musicText.position.set(-225, 71);
 
-        this.panel.addChild(this.soundText);
+        this.panel.addChild(this.musicText);
 
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
@@ -142,21 +144,16 @@ export class SettingPanel extends Container {
         this.animateIn();
     }
 
-    /**
-     * Оновити всі тексти при зміні мови
-     */
+     // Оновити всі тексти при зміні мови
     private updateTexts(): void {
         this.titleText.text = LanguageManager.t('settings');
         this.languageText.text = LanguageManager.t('language');
         this.windowText.text = LanguageManager.t('screen');
-        this.soundText.text = LanguageManager.t('sound');
+        this.musicText.text = LanguageManager.t('sound');
         this.closeButtonText.text = LanguageManager.t('close');
     }
 
-    private createFlagButton(
-        texture: Texture,
-        callback: () => void
-    ): Container {
+    private createFlagButton(texture: Texture, callback: () => void): Container {
 
         const btn = new Container();
 
@@ -171,7 +168,10 @@ export class SettingPanel extends Container {
 
         btn.addChild(this.flagIcon);
 
-        btn.on('pointertap', callback);
+        btn.on('pointertap', () => {
+            this.soundManager.play('button');
+            callback();
+        });
 
         return btn;
     }
@@ -235,6 +235,7 @@ export class SettingPanel extends Container {
         btn.addChild(this.closeButtonText);
 
         btn.on('pointerdown', () => {
+            this.soundManager.play('closed')
             gsap.to(btn.scale, {
                 x: 0.95,
                 y: 0.95,

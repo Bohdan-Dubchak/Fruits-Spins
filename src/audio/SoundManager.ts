@@ -2,7 +2,7 @@ import {Howl, Howler} from "howler";
 
 export class SoundManager {
     private sounds: Map<string, Howl> = new Map();
-    private musicVolume: number = 0.4;
+    private musicVolume: number = 0.3;
     private sfxVolume: number = 0.8;
     private isMuted: boolean = false;
 
@@ -13,7 +13,7 @@ export class SoundManager {
     private loadSounds(): void {
         // Фонова музика
         this.sounds.set('music', new Howl({
-            src: ['/assets/audio/game.mp3'],
+            src: ['/assets/audio/game.ogg'],
             loop: true,
             volume: this.musicVolume
         }));
@@ -32,8 +32,8 @@ export class SoundManager {
 
         // Звук кнопки
         this.sounds.set('closed', new Howl({
-            src: ['/assets/audio/closed.mp3'],
-            volume: this.sfxVolume * 0.6
+            src: ['/assets/audio/closed.ogg'],
+            volume: this.sfxVolume * 0.5
         }))
 
         this.sounds.set('button', new Howl({
@@ -41,9 +41,14 @@ export class SoundManager {
             volume: this.sfxVolume * 0.5
         }));
 
+        this.sounds.set('bet', new Howl({
+            src: ['/assets/audio/betBtn.ogg'],
+            volume: this.sfxVolume * 0.4
+        }))
+
         // Звук зупинки барабану
         this.sounds.set('reelStop', new Howl({
-            src: ['assets/audio/stop.mp3'],
+            src: ['assets/audio/stop.ogg'],
             volume: this.sfxVolume
         }));
 
@@ -58,7 +63,7 @@ export class SoundManager {
     play(soundName: string): void {
         if (!this.isMuted) {
             const sound = this.sounds.get(soundName);
-            if (sound) {
+            if (sound && !sound.playing()) {
                 sound.play();
             }
         }

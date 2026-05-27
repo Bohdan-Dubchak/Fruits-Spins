@@ -1,6 +1,7 @@
 import { Container, Graphics, Text } from "pixi.js";
 import {LanguageManager} from "../../managers/LanguageManager.ts";
 import type {Language} from "../../managers/translations.ts";
+import {SoundManager} from "../../audio/SoundManager.ts";
 import { gsap } from "gsap";
 
 export class InfoPanel extends Container {
@@ -10,6 +11,7 @@ export class InfoPanel extends Container {
     private textClose!: Text;
     private betText!: Text;
     private winText!: Text;
+    private soundManager: SoundManager;
     private closeCallback?: () => void;
     private languageChangeCallback: (language: Language) => void;
 
@@ -18,9 +20,12 @@ export class InfoPanel extends Container {
         winAmount: number,
         balance: number,
         gameWidth: number,
-        gameHeight: number
+        gameHeight: number,
+        soundManager: SoundManager
     ) {
         super();
+
+        this.soundManager = soundManager;
 
         // Напівпрозорий фон
         this.backdrop = new Graphics();
@@ -152,6 +157,7 @@ export class InfoPanel extends Container {
         btn.addChild(textClose);
 
         btn.on('pointerdown', () => {
+            this.soundManager.play('closed')
             gsap.to(btn.scale, {
                 x: 0.95,
                 y: 0.95,
