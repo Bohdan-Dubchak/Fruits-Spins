@@ -13,7 +13,7 @@ export class SpinManager {
     private onSpinEnd?: () => void;
     private wallet: WalletManager;
     private betManager: BetManager;
-    private onWinCheck: (matrix: string[][]) => void; // ← просто string[][]
+    private onWinCheck: (matrix: string[][]) => void;
     private onBalanceUpdate: () => void;
 
     constructor(
@@ -21,7 +21,7 @@ export class SpinManager {
         spinGenerator: WeightedSpinGenerator,
         wallet: WalletManager,
         betManager: BetManager,
-        onWinCheck: (matrix: string[][]) => void, // ← просто string[][]
+        onWinCheck: (matrix: string[][]) => void,
         onBalanceUpdate: () => void,
     ) {
         this.reelsContainer = reelsContainer;
