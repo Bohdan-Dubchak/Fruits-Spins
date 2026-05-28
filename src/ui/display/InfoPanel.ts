@@ -1,8 +1,8 @@
-import { Container, Graphics, Text } from "pixi.js";
+import {Container, Graphics, Text} from "pixi.js";
 import {LanguageManager} from "../../managers/LanguageManager.ts";
 import type {Language} from "../../managers/translations.ts";
 import {SoundManager} from "../../audio/SoundManager.ts";
-import { gsap } from "gsap";
+import {gsap} from "gsap";
 
 export class InfoPanel extends Container {
     private backdrop: Graphics;
@@ -27,7 +27,6 @@ export class InfoPanel extends Container {
 
         this.soundManager = soundManager;
 
-        // Напівпрозорий фон
         this.backdrop = new Graphics();
         this.backdrop.rect(0, 0, gameWidth, gameHeight);
         this.backdrop.fill({
@@ -39,12 +38,10 @@ export class InfoPanel extends Container {
 
         this.addChild(this.backdrop);
 
-        // Основна панель
         this.panel = new Container();
         this.panel.position.set(gameWidth / 2, gameHeight / 2);
         this.addChild(this.panel);
 
-        // Фон панелі
         const panelBg = new Graphics();
         panelBg.roundRect(-200, -180, 400, 360, 20);
         panelBg.fill({ color: 0x2a2a2a });
@@ -54,7 +51,6 @@ export class InfoPanel extends Container {
         });
 
         this.panel.addChild(panelBg);
-
 
         const title = new Text({
             text: LanguageManager.t('info'),
@@ -113,11 +109,9 @@ export class InfoPanel extends Container {
 
         this.panel.addChild(winText);
 
-
         const closeBtn = this.createCloseButton();
         this.panel.addChild(closeBtn);
 
-        // Початкова анімація
         this.alpha = 0;
         this.panel.scale.set(0.5);
         this.animateIn();
