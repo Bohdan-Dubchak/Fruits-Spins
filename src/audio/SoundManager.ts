@@ -5,6 +5,7 @@ export class SoundManager {
     private musicVolume: number = 0.3;
     private sfxVolume: number = 0.8;
     private isMuted: boolean = false;
+    private muted : boolean = false;
 
     constructor() {
         this.loadSounds();
@@ -72,6 +73,16 @@ export class SoundManager {
         const sound = this.sounds.get(soundName);
         if (sound) {
             sound.stop();
+        }
+    }
+
+    public toggleSound(): void {
+        this.muted = !this.muted;
+
+        if (this.muted) {
+            Howler.mute(true);
+        } else {
+            Howler.mute(false);
         }
     }
 
