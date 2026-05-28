@@ -14,7 +14,6 @@ export class SettingsBtn extends Container {
     private readonly onClick: () => void;
     private soundManager: SoundManager;
 
-    // Callback для зміни мови
     private languageChangeCallback: (language: Language) => void;
 
     constructor(onClick: () => void, soundManager: SoundManager) {
@@ -41,7 +40,6 @@ export class SettingsBtn extends Container {
             fill: '#f8c035',
         });
 
-        // Використовуємо переклад замість захардкодженого тексту
         this.buttonText = new Text({
             text: LanguageManager.t('settings'),
             style: textStyle
@@ -64,12 +62,10 @@ export class SettingsBtn extends Container {
         this.on('pointerup', () => this.handleUp());
         this.on('pointerupoutside', () => this.handleUpOutside());
 
-        // Підписуємося на зміни мови
         this.languageChangeCallback = () => this.updateText();
         LanguageManager.addListener(this.languageChangeCallback);
     }
 
-     // Оновити текст кнопки при зміні мови
     private updateText(): void {
         this.buttonText.text = LanguageManager.t('settings');
     }
@@ -132,7 +128,6 @@ export class SettingsBtn extends Container {
     public destroy(): void {
         gsap.killTweensOf(this.buttonContainer.scale);
         this.removeAllListeners();
-        // Відписуємося від змін мови перед знищенням
         LanguageManager.removeListener(this.languageChangeCallback);
         super.destroy();
     }
