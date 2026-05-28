@@ -1,5 +1,5 @@
-import { Container } from "pixi.js";
-import { gsap } from "gsap";
+import {Container} from "pixi.js";
+import {gsap} from "gsap";
 
 export class SceneManager {
 
