@@ -1,6 +1,6 @@
-import { Assets, Container, Sprite, Rectangle } from "pixi.js";
+import {Assets, Container, Sprite, Rectangle} from "pixi.js";
 import {SoundManager} from "../../audio/SoundManager.ts";
-import { gsap } from "gsap";
+import {gsap} from "gsap";
 
 export class PlayButton extends Container {
     private originalScaleX: number;
