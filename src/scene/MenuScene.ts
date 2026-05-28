@@ -28,10 +28,8 @@ export class MenuScene extends Container {
         this.settingsBtn = new SettingsBtn(onSettingsClick, this.soundManager);
         this.settingsBtn.position.set(533, 290);
 
-
         this.exitBtn = new ExitBtn(this.soundManager);
         this.exitBtn.position.set(533, 387);
-
 
         this.addChild(bg, this.playBtn, this.settingsBtn, this.exitBtn);
     }
