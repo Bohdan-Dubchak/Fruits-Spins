@@ -35,7 +35,7 @@ export class UIFactory {
             () => betManager.stop()
         );
 
-        const soundBtn = new SoundButton(() => this.soundManager.toggleSound());
+        const soundBtn = new SoundButton(() => this.soundManager.toggleSound(), this.soundManager.isSoundMuted());
         const infoBtn = new InfoBtn(onInfo, this.soundManager);
 
         return {
