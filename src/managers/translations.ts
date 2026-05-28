@@ -1,4 +1,4 @@
-export type Language = 'ua' | 'en' | 'de';
+export type Language = 'en' | 'de' | 'ua';
 
 export type Translations = {
     settings: string;
@@ -17,22 +17,6 @@ export type Translations = {
 
 export const translations: Record<Language, Translations> = {
 
-    ua: {
-        settings: 'НАЛАШТУВАННЯ',
-        language: 'Мова',
-        screen: 'Екран',
-        sound: 'Музика',
-        close: 'ЗАКРИТИ',
-        exit: 'ЗАКРИТИ',
-        menuSettings: 'НАЛАШТУВАННЯ',
-        info: 'ІНФОРМАЦІЯ',
-        bet: 'Ставка:',
-        win: 'Останній виграш:',
-        balance: `Баланс: `,
-
-        winMessage: 'ВИГРАШ'
-    },
-
     en: {
         settings: 'SETTINGS',
         language: 'Language',
@@ -45,7 +29,6 @@ export const translations: Record<Language, Translations> = {
         bet: 'Bet:',
         win: 'Last win:',
         balance: `Balance: `,
-
         winMessage: 'WIN'
     },
 
@@ -61,7 +44,21 @@ export const translations: Record<Language, Translations> = {
         bet: 'Wetten:',
         win: 'Letzter Sieg:',
         balance: 'Gleichgewicht: ',
-
         winMessage: 'GEWINN',
-    }
+    },
+
+    ua: {
+        settings: 'НАЛАШТУВАННЯ',
+        language: 'Мова',
+        screen: 'Екран',
+        sound: 'Музика',
+        close: 'ЗАКРИТИ',
+        exit: 'ЗАКРИТИ',
+        menuSettings: 'НАЛАШТУВАННЯ',
+        info: 'ІНФОРМАЦІЯ',
+        bet: 'Ставка:',
+        win: 'Останній виграш:',
+        balance: `Баланс: `,
+        winMessage: 'ВИГРАШ'
+    },
 };
