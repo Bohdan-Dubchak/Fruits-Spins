@@ -11,7 +11,7 @@ export class SoundButton extends Container {
     private soundOnTexture: Texture;
     private soundOffTexture: Texture;
 
-    constructor(onClick: (muted: boolean) => void) {
+    constructor(onClick: (muted: boolean) => void, initialMuted: boolean = false) {
         super();
 
         this.eventMode = "static";
@@ -37,6 +37,9 @@ export class SoundButton extends Container {
 
         this.on("pointerdown", () => this.handleDown(onClick));
         this.on("pointerup", () => this.handleUp());
+
+        this.isMuted = initialMuted;
+        this.bg.texture = this.isMuted ? this.soundOffTexture : this.soundOnTexture;
     }
 
     private handleDown(onClick: (muted: boolean) => void): void {
