@@ -22,7 +22,6 @@ export class App {
     }
 
     async init(): Promise<void> {
-
         try {
             await this.app.init({
                 width: GAME_CONFIG.WIDTH,
