@@ -1,9 +1,9 @@
 export const SYMBOL_WEIGHTS = {
-    cherry: 25,    // Найчастіший (низький виграш)
-    lemon: 25,     // Частий
-    orange: 20,    // Середній
-    plum: 15,      // Середній
-    grapes: 10,    // Рідший
-    bell: 4,       // Рідкісний (високий виграш)
-    seven: 1       // ДУЖЕ рідкісний (джекпот)
+    cherry: 25,
+    lemon: 25,
+    orange: 20,
+    plum: 15,
+    grapes: 10,
+    bell: 4,
+    seven: 1
 };
