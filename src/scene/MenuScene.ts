@@ -32,5 +32,7 @@ export class MenuScene extends Container {
         this.exitBtn.position.set(533, 387);
 
         this.addChild(bg, this.playBtn, this.settingsBtn, this.exitBtn);
+
+        this.soundManager.playMusic();
     }
 }
