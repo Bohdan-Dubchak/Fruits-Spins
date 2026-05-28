@@ -1,16 +1,16 @@
 import {Assets, Container, Sprite} from "pixi.js";
-import { ReelContainer } from "../reels/ReelsContainer.ts";
-import { HUD } from "../ui/display/HUD.ts";
-import { WinText } from "../ui/display/WinText.ts";
-import { WalletManager } from "../game/wallet/WalletManager.ts";
-import { SpinManager } from "../game/spin/SpinManager.ts";
-import { BetManager } from "../game/bet/BetManager.ts";
-import { WinHandler } from "../game/win/WinHandler.ts";
-import { RNG } from "../game/engine/RNG.ts";
-import { WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
-import { GAME_CONFIG } from "../config/game.ts";
-import { UIFactory } from "../ui/UIFactory.ts";
-import { ReelsOverlay } from "../reels/ReelsOverlay.ts";
+import {ReelContainer} from "../reels/ReelsContainer.ts";
+import {HUD} from "../ui/display/HUD.ts";
+import {WinText} from "../ui/display/WinText.ts";
+import {WalletManager} from "../game/wallet/WalletManager.ts";
+import {SpinManager} from "../game/spin/SpinManager.ts";
+import {BetManager} from "../game/bet/BetManager.ts";
+import {WinHandler} from "../game/win/WinHandler.ts";
+import {RNG} from "../game/engine/RNG.ts";
+import {WeightedSpinGenerator } from "../game/engine/WeightedSpinGenerator.ts";
+import {GAME_CONFIG} from "../config/game.ts";
+import {UIFactory} from "../ui/UIFactory.ts";
+import {ReelsOverlay} from "../reels/ReelsOverlay.ts";
 import {InfoPanelManager} from "../managers/InfoPanelManager.ts";
 import {HomeBtn} from "../ui/button/homeButton.ts";
 import {SoundManager} from "../audio/SoundManager.ts";
@@ -181,7 +181,6 @@ export class GameScene extends Container {
     public override destroy(options?: any): void {
         this.betManager.destroy();
         this.infoPanelManager.destroy();
-
         this.reelsContainer.destroy();
         this.removeChildren();
         super.destroy(options);
