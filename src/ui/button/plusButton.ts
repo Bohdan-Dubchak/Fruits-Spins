@@ -2,7 +2,6 @@ import {Assets, Container, Rectangle, Sprite} from "pixi.js";
 import {SoundManager} from "../../audio/SoundManager.ts";
 import {gsap} from "gsap";
 
-
 export class PlusBet extends Container {
     private originalScaleX: number;
     private originalScaleY: number;
