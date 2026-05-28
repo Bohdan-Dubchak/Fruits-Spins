@@ -14,48 +14,48 @@ export class SoundManager {
     private loadSounds(): void {
 
         this.sounds.set('music', new Howl({
-            src: ['/assets/audio/game.ogg'],
+            src: ['/audio/game.ogg'],
             loop: true,
             volume: this.musicVolume
         }));
 
         this.sounds.set('spin', new Howl({
-            src: ['/assets/audio/startSpin.ogg'],
+            src: ['/audio/startSpin.ogg'],
             volume: 1
         }));
 
         this.sounds.set('auto', new Howl({
-            src: ['/assets/audio/startAuto.ogg'],
+            src: ['/audio/startAuto.ogg'],
             volume: this.sfxVolume * 0.6
         }))
 
         this.sounds.set('win', new Howl({
-            src: ['/assets/audio/winMini.ogg'],
+            src: ['/audio/winMini.ogg'],
             volume: this.sfxVolume
         }));
 
         this.sounds.set('closed', new Howl({
-            src: ['/assets/audio/closed.ogg'],
+            src: ['/audio/closed.ogg'],
             volume: this.sfxVolume * 0.5
         }))
 
         this.sounds.set('button', new Howl({
-            src: ['/assets/audio/click.ogg'],
+            src: ['/audio/click.ogg'],
             volume: this.sfxVolume * 0.5
         }));
 
         this.sounds.set('bet', new Howl({
-            src: ['/assets/audio/bet.ogg'],
+            src: ['/audio/bet.ogg'],
             volume: this.sfxVolume * 0.4
         }))
 
         this.sounds.set('reelStop', new Howl({
-            src: ['assets/audio/stopReel.ogg'],
+            src: ['/audio/stopReel.ogg'],
             volume: this.sfxVolume
         }));
 
         this.sounds.set('bigWin', new Howl({
-            src: ['/assets/audio/winMega.ogg'],
+            src: ['/audio/winMega.ogg'],
             volume: 1.0
         }))
     }
