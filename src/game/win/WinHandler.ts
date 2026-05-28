@@ -8,7 +8,6 @@ import {WinTextAnimation} from "../../animations/WinAnimations.ts";
 import {ReelContainer} from "../../reels/ReelsContainer.ts";
 import {animationSymbols} from "../../animations/ReelSymbolAnimation.ts";
 
-
 export class WinHandler {
     private wallet: WalletManager;
     private winText: WinText;
@@ -31,14 +30,10 @@ export class WinHandler {
         );
 
         if (result.totalWin > 0) {
-            this.logWins(result.wins);
-
-            // Анімація виграшних символів
             const winningSprites: Sprite[] = [];
 
             result.wins.forEach(win => {
 
-                // Використовуємо готові positions
                 win.positions?.forEach(pos => {
                     const sprite = this.reelsContainer.getSymbolSprite(
                         pos.reel,
@@ -51,7 +46,6 @@ export class WinHandler {
                 });
             });
 
-            // Викликаємо анімацію
             if (winningSprites.length > 0) {
                 animationSymbols(winningSprites);
             }
@@ -63,17 +57,6 @@ export class WinHandler {
             WinTextAnimation.play(this.winText);
         }
 
-        return result.totalWin;  // Повертаємо суму виграшу
-    }
-
-    private logWins(wins: any[]): void {
-        wins.forEach((win) => {
-            console.log(
-                `🎉 Line ${win.lineIndex + 1}`,
-                `Symbol: ${win.symbol}`,
-                `Count: ${win.count}`,
-                `Win: ${win.amount}`
-            );
-        });
+        return result.totalWin;
     }
 }
