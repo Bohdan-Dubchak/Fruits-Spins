@@ -1,4 +1,3 @@
-// Опис відповідностей
 export const payTable:  Record<string, Record<number, number>> = {
     bell:   { 3: 20, 4: 70, 5: 100 },
     cherry: { 3: 2, 4: 12, 5: 30 },
