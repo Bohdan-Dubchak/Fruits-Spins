@@ -61,10 +61,6 @@ export class Reel extends Container {
         this.symbolsContainer.mask = mask;
     }
 
-    /**
-     * Завантажує текстури всіх символів з Assets
-     * @private
-     */
     private loadTextures(): void {
         this.symbolMap = [
             {id: 'bell', texture: Assets.get("bell"), scale: 1},
@@ -77,7 +73,6 @@ export class Reel extends Container {
         ]
     }
 
-    // @ts-ignore
     private getTexture(id: string): Texture {
         const texture = Assets.get(id);
 
@@ -95,8 +90,6 @@ export class Reel extends Container {
         return this.symbolMap[index];
     }
 
-    // Створює початковий набір з 5 символів для барабана
-    // 5 символів потрібно для безперервної прокрутки (3 видимі + 2 буферні)
     private createSymbols(): void {
         for (let i = 0; i < 5; i++) {
             const {id, texture} = this.getRandomSymbol()
@@ -123,7 +116,6 @@ export class Reel extends Container {
         this.resultSymbols = symbols;
     }
 
-    // Встановлює цільову швидкість для плавного старту, запуск
     public spin(): void {
         if (this.isSpinning) return
 
@@ -132,18 +124,14 @@ export class Reel extends Container {
         this.targetSpeed = 30;
     }
 
-    // Зупиняє барабан
     public stop(): void {
         this.targetSpeed = 0;
     }
 
-    // Перевіряємо чи барабан крутиться
     public getIsSpinning(): boolean {
         return this.isSpinning;
     }
 
-
-    // Цикл анімації швидкості
     private update(): void {
         this.animations.update(this.speed, this.targetSpeed);
 
@@ -159,10 +147,8 @@ export class Reel extends Container {
 
                 let symbolId: string;
                 if (this.isSpinning && this.speed > 5) {
-                    // Під час швидкого обертання - випадкові символи
                     symbolId = this.getRandomSymbol().id;
                 } else {
-                    // При уповільненні - результат з матриці
                     const visibleIndex = Math.round(symbol.y / this.symbolSize);
                     const resultIndex = visibleIndex % this.resultSymbols.length;
                     symbolId = this.resultSymbols[resultIndex];
@@ -212,7 +198,6 @@ export class Reel extends Container {
         this.onStop = callback;
     }
 
-    //  Повертає ID середнього видимого символа (row 1)
     public getMiddleSymbol(): string {
         const targetY = this.symbolSize;
 
@@ -230,9 +215,8 @@ export class Reel extends Container {
 
         return closest.symbolId;
     }
-// Повертає масив Sprite об'єктів всіх 3 видимих символів
+
     public getVisibleSymbolsSprites(): SymbolSprite[] {
-        // Повертає три спрайти по центру (видимий ряд)
         const result: SymbolSprite[] = [];
         for (let row = 0; row < 3; row++) {
             const targetY = row * this.symbolSize;
