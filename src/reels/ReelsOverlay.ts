@@ -30,24 +30,22 @@ export class ReelsOverlay extends Container {
     private createGradient(config: Required<ReelsOverlayConfig>): void {
         const gradient = new Graphics();
 
-        // Верхня тінь
         gradient.rect(0, 0, config.width, config.topShadowHeight);
         gradient.fill({
             color: config.color,
             alpha: config.alpha });
 
-        // Нижня тінь
         gradient.rect(
             0,
             config.height - config.bottomShadowHeight,
             config.width,
             config.bottomShadowHeight
         );
+
         gradient.fill({
             color: config.color,
             alpha: config.alpha });
 
-        // Blur для м'якого переходу
         gradient.filters = [new BlurFilter({
             strength: config.blurStrength })];
 
