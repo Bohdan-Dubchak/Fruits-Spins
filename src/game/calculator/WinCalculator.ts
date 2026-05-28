@@ -55,7 +55,6 @@ export class WinCalculator {
             });
         });
 
-        // Вертикальний виграш
         matrix.forEach((reel, reelIndex) => {
             const verticalWins = this.checkLine(reel);
 
@@ -84,7 +83,6 @@ export class WinCalculator {
                 }
             })
         })
-
         return {
             totalWin,
             wins,
@@ -95,12 +93,10 @@ export class WinCalculator {
 
         const results: { symbol: string, count: number, startPosition: number }[] = [];
 
-        // Перевіряємо з кожної позиції
         for (let s = 0; s <= symbols.length - 3; s++) {
             const symbol = symbols[s];
             let count = 1;
 
-            // Рахуємо послідовні однакові символи
             for (let i = s + 1; i < symbols.length; i++) {
                 if (symbols[i] === symbol) {
                     count++;
@@ -109,13 +105,11 @@ export class WinCalculator {
                 }
             }
 
-            // Якщо знайшли 3 або більше - додаємо
             if (count >= 3) {
                 results.push({symbol, count, startPosition: s});
                 break;
             }
         }
-
         return results;
     }
 }
