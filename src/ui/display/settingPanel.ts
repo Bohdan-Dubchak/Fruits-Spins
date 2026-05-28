@@ -16,15 +16,12 @@ export class SettingPanel extends Container {
     private musicText!: Text;
     private closeButtonText!: Text;
     private soundManager: SoundManager;
-    private musicOnText: Text;
-    private bg: Graphics;
+    private musicOnText!: Text;
+    private bg!: Graphics;
     private languageChangeCallback: (language: Language) => void;
 
-    constructor(gameWidth: number, gameHeight: number, soundManager: SoundManager, musicOnText: Text, bg: Graphics) {
+    constructor(gameWidth: number, gameHeight: number, soundManager: SoundManager) {
         super();
-
-        this.musicOnText = musicOnText;
-        this.bg = bg;
 
         this.backdrop = new Graphics();
         this.backdrop.rect(0, 0, gameWidth, gameHeight);
@@ -270,7 +267,6 @@ export class SettingPanel extends Container {
         bg.fill({ color: 0xff4444 });
         btn.addChild(bg);
 
-        // Зберігаємо посилання на текст кнопки
         this.closeButtonText = new Text({
             text: LanguageManager.t('close'),
             style: {
@@ -328,7 +324,6 @@ export class SettingPanel extends Container {
     }
 
     public close(): void {
-        // Вимикаємо інтерактивність під час закриття
         this.backdrop.eventMode = 'none';
         this.panel.eventMode = 'none';
 
@@ -355,7 +350,6 @@ export class SettingPanel extends Container {
     }
 
     public destroy(): void {
-        // Відписуємося від змін мови перед знищенням
         LanguageManager.removeListener(this.languageChangeCallback);
         super.destroy();
     }
