@@ -7,7 +7,6 @@ export function animationSymbols (symbols: Sprite[]): void {
 
         const originalRotation = sprite.rotation;
 
-        // Timeline з затуханням амплітуди
         const tl = gsap.timeline();
 
         tl.to(sprite, {
