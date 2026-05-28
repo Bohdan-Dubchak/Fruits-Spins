@@ -4,8 +4,8 @@ export class SoundManager {
     private sounds: Map<string, Howl> = new Map();
     private musicVolume: number = 0.3;
     private sfxVolume: number = 0.8;
-    private isMuted: boolean = false;
     private muted : boolean = false;
+    private musicEnabled: boolean = true;
 
     constructor() {
         this.loadSounds();
@@ -61,11 +61,18 @@ export class SoundManager {
     }
 
     public play(soundName: string): void {
-        if (!this.isMuted) {
+        if (!this.muted) {
             const sound = this.sounds.get(soundName);
             if (sound && !sound.playing()) {
                 sound.play();
             }
+        }
+    }
+
+    public playMusic(): void {
+        const music = this.sounds.get('music');
+        if (music && !music.playing() && this.musicEnabled) {
+            music.play();
         }
     }
 
@@ -92,15 +99,21 @@ export class SoundManager {
 
         if (music.playing()) {
             music.stop();
+            this.musicEnabled = false;
             return false;
         } else {
             music.play();
+            this.musicEnabled = true;
             return true;
         }
     }
 
     public isMusicPlaying(): boolean {
         return this.sounds.get('music')?.playing() ?? false;
+    }
+
+    public isSoundMuted(): boolean {
+        return this.muted;
     }
 
     public destroy(): void {
