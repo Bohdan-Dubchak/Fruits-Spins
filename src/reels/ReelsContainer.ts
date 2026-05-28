@@ -31,30 +31,25 @@ export class ReelContainer extends Container {
     }
 
     public async spinAll(callback: () => void): Promise<void> {
-        // Запускаємо всі барабани
+
         this.reels.forEach(reel => reel.spin());
 
-        // Зупиняємо по черзі з затримкою
         for (let i = 0; i < this.reels.length; i++) {
             await new Promise(resolve => setTimeout(resolve, 1500 + i * 300));
             this.reels[i].stop();
 
         }
 
-        // Чекаємо поки всі точно зупиняться
         await this.waitForAllReelsToStop();
 
-        // Викликаємо callback
         callback();
     }
 
-    // Чекає поки всі барабани зупиняться
     private async waitForAllReelsToStop(): Promise<void> {
         return new Promise((resolve) => {
             const checkInterval = setInterval(() => {
                 if (!this.isAnySpinning()) {
                     clearInterval(checkInterval);
-                    // Додаткова затримка для стабільності
                     setTimeout(() => resolve(), 100);
                 }
             }, 50); // Перевіряємо кожні 50ms
@@ -75,7 +70,7 @@ export class ReelContainer extends Container {
         });
     }
 
-    public getSymbolMatrix(): string[][] { // ← просто string[][]
+    public getSymbolMatrix(): string[][] {
         return this.reels.map((reel) => {
             return reel.getVisibleSymbolsSprites().map(sprite => {
                 return sprite.symbolId;
