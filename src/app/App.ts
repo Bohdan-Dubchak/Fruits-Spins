@@ -1,13 +1,14 @@
-import {Application, type Renderer} from "pixi.js";
+import {Assets, Application, type Renderer} from "pixi.js";
 import {GAME_CONFIG} from "../config/game.ts";
 import {Loader} from "../config/Loader.ts";
 import {RNG} from "../game/engine/RNG.ts";
-import {SceneManager} from "../animations/Transitioning.ts";
+import {SceneManager} from "../managers/SceneManager.ts";
 import {MenuScene} from "../scene/MenuScene.ts";
 import {GameScene} from "../scene/GameScene.ts";
 import {SettingPanelManager} from "../managers/settingPanelManager.ts";
 import {ResolutionManager} from "../config/resolution.ts";
 import {SoundManager} from "../audio/SoundManager.ts";
+import {LoadingScene} from "../scene/LoadingScene.ts";
 
 export class App {
 
@@ -33,14 +34,23 @@ export class App {
 
             this.app.canvas.style.borderRadius = '20px'
 
-
             document.body.appendChild(this.app.canvas);
 
-            await Loader.load();
+            await Assets.load({alias: 'loading', src: '/assets/Fon/Loading.webp'});
+
+            const loadingScene = new LoadingScene();
+            this.app.stage.addChild(loadingScene);
+
+            await Loader.load((progress) => {
+                loadingScene.updateProgress(progress);
+            });
 
             await this.loadFonts();
 
-            this.sceneManager = new SceneManager(this.app.stage);
+            this.app.stage.removeChild(loadingScene);
+            loadingScene.destroy();
+
+            this.sceneManager = new SceneManager(this.app.stage)
 
             this.settingPanelManager = new SettingPanelManager(
                 GAME_CONFIG.WIDTH,
