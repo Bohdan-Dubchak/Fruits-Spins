@@ -1,5 +1,5 @@
-import { Assets, Container, Rectangle, Sprite, Texture } from "pixi.js";
-import { gsap } from "gsap";
+import {Assets, Container, Rectangle, Sprite, Texture} from "pixi.js";
+import {gsap} from "gsap";
 
 export class SoundButton extends Container {
     private originalScaleX: number;
