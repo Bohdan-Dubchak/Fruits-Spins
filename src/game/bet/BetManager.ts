@@ -1,4 +1,4 @@
-import { WalletManager } from "../wallet/WalletManager.ts";
+import {WalletManager} from "../wallet/WalletManager.ts";
 
 export class BetManager {
     private interval: ReturnType<typeof setInterval> | null = null;
