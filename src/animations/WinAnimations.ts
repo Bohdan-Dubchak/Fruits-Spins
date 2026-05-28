@@ -9,9 +9,7 @@ export class WinTextAnimation {
         gsap.killTweensOf(text.scale);
 
         text.visible = true;
-
         text.alpha = 0;
-
         text.scale.set(0.5);
 
         gsap.timeline()
