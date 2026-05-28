@@ -30,7 +30,7 @@ export class SettingPanel extends Container {
             alpha: 0.7
         });
 
-        this.soundManager = soundManager
+        this.soundManager = soundManager;
 
         this.backdrop.eventMode = 'static';
 
@@ -219,7 +219,7 @@ export class SettingPanel extends Container {
         this.bg.fill({ color: 0x444444 });
 
          this.musicOnText = new Text({
-            text: 'OFF',
+            text: 'ON',
             style: {
                 fontFamily: "Viga",
                 fontSize: 10,
@@ -232,16 +232,16 @@ export class SettingPanel extends Container {
         this.musicOnText.position.set(0, 71);
 
         const isPlaying = this.soundManager.isMusicPlaying();
-        this.musicOnText.text = isPlaying ? 'OFF' : 'ON';
-        this.musicOnText.style.fill = isPlaying ? '#844D4D' : '#4D844D';
+        this.musicOnText.text = isPlaying ? 'ON' : 'OFF';
+        this.musicOnText.style.fill = isPlaying ? '#4D844D' : '#844D4D';
 
 
         btn.addChild(this.bg, this.musicOnText);
 
         btn.on('pointertap', () => {
             const isPlaying = this.soundManager.toggleMusic();
-            this.musicOnText.text = isPlaying ? 'OFF' : 'ON';
-            this.musicOnText.style.fill = isPlaying ? '#844D4D' : '#4D844D';
+            this.musicOnText.text = isPlaying ? 'ON' : 'OFF';
+            this.musicOnText.style.fill = isPlaying ? '#4D844D' : '#844D4D';
             callback();
         });
 
