@@ -10,13 +10,11 @@ export class WeightedSpinGenerator {
     constructor(rng: RNG) {
         this.rng = rng;
 
-        // Створюємо масиви символів та ваг
         this.symbols = Object.keys(SYMBOL_WEIGHTS);
         this.weights = Object.values(SYMBOL_WEIGHTS);
         this.totalWeight = this.weights.reduce((a, b) => a + b, 0);
     }
 
-    // Вибирає випадковий символ з урахуванням ваг
     private getWeightedSymbol(): string {
         const random = this.rng.next() * this.totalWeight;
 
