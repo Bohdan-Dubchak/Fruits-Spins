@@ -39,9 +39,7 @@ export class WeightedSpinGenerator {
             for (let row = 0; row < 3; row++) {
                 let symbol = this.getWeightedSymbol();
 
-                // Якщо останні 2 символи однакові - спробувати інший
                 if (row >= 2 && column[row-1] === column[row-2] && column[row-1] === symbol) {
-                    // Спробуємо ще раз (макс 3 спроби)
                     for (let attempt = 0; attempt < 3; attempt++) {
                         symbol = this.getWeightedSymbol();
                         if (symbol !== column[row-1]) break;
