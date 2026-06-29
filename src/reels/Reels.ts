@@ -135,8 +135,9 @@ export class Reel extends Container {
     private update(): void {
         this.animations.update(this.speed, this.targetSpeed);
 
-        const easingFactor = 0.10;
-        this.speed += (this.targetSpeed - this.speed) * easingFactor;
+        const deltaMS = Ticker.shared.deltaMS / 1000;
+        const easingFactor = 5;
+        this.speed += (this.targetSpeed - this.speed) * (1 - Math.exp(-easingFactor * deltaMS));
 
         for (const symbol of this.symbols) {
             symbol.y += this.speed;
@@ -175,7 +176,8 @@ export class Reel extends Container {
                 if (symbol.y >= totalHeight) symbol.y -= totalHeight;
 
                 const nearest = Math.round(symbol.y / this.symbolSize) * this.symbolSize;
-                symbol.y += (nearest - symbol.y) * 0.5;
+                const snapFactor = 15;
+                symbol.y += (nearest - symbol.y) * (1 - Math.exp(-snapFactor * deltaMS));
 
                 if (Math.abs(symbol.y - nearest) > 0.5) {
                     allAligned = false;
