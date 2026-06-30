@@ -74,8 +74,12 @@ export class Reel extends Container {
     }
 
     private getTexture(id: string): Texture {
-        const texture = Assets.get(id);
+        if (!id) {
+            console.warn("getTexture called with empty id, using fallback");
+            return this.symbolMap[0].texture;
+        }
 
+        const texture = Assets.get(id);
         if (!texture) {
             throw new Error(`Texture id ${id} not found`);
         }
@@ -91,14 +95,16 @@ export class Reel extends Container {
     }
 
     private createSymbols(): void {
-        for (let i = 0; i < 5; i++) {
-            const {id, texture} = this.getRandomSymbol()
+        const total = 6; // 3 видимих + 2 буфер зверху + 1 знизу для плавності
+
+        for (let i = 0; i < total; i++) {
+            const {id, texture} = this.getRandomSymbol();
 
             const sprite = new Sprite(texture) as SymbolSprite;
 
             sprite.width = this.symbolSize;
             sprite.height = this.symbolSize;
-            sprite.y = i * this.symbolSize;
+            sprite.y = (i - 2) * this.symbolSize; // -2, -1, 0, 1, 2, 3
 
             sprite.symbolId = id;
 
@@ -139,25 +145,34 @@ export class Reel extends Container {
         const easingFactor = 5;
         this.speed += (this.targetSpeed - this.speed) * (1 - Math.exp(-easingFactor * deltaMS));
 
-        for (const symbol of this.symbols) {
-            symbol.y += this.speed;
+        const totalHeight = this.symbolSize * this.symbols.length;
 
-            if (symbol.y >= this.symbolSize * this.symbols.length) {
-                symbol.y -= this.symbolSize * this.symbols.length;
+        if (!this.isSnapping) {
+            for (const symbol of this.symbols) {
+                symbol.y += this.speed;
 
-
-                let symbolId: string;
-                if (this.isSpinning && this.speed > 5) {
-                    symbolId = this.getRandomSymbol().id;
-                } else {
-                    const visibleIndex = Math.round(symbol.y / this.symbolSize);
-                    const resultIndex = visibleIndex % this.resultSymbols.length;
-                    symbolId = this.resultSymbols[resultIndex];
+                // recycling: символ вийшов за нижню межу видимої зони
+                if (symbol.y >= this.reelHeight + this.symbolSize) {
+                    symbol.y -= totalHeight;
                 }
 
-                const texture = this.getTexture(symbolId);
-                symbol.texture = texture;
-                symbol.symbolId = symbolId;
+                // міняємо текстуру тільки раз — коли символ повністю в буфері зверху
+                if (symbol.y <= -this.symbolSize && symbol.y > -this.symbolSize - this.speed - 1) {
+                    let symbolId: string;
+                    if (this.isSpinning && this.speed > 5) {
+                        symbolId = this.getRandomSymbol().id;
+                    } else if (this.resultSymbols.length > 0) {  // ← перевірка
+                        const visibleIndex = Math.round(symbol.y / this.symbolSize);
+                        const resultIndex = ((visibleIndex % this.resultSymbols.length) + this.resultSymbols.length) % this.resultSymbols.length;
+                        symbolId = this.resultSymbols[resultIndex];
+                    } else {
+                        symbolId = this.getRandomSymbol().id;  // ← fallback
+                    }
+
+                    const texture = this.getTexture(symbolId);
+                    symbol.texture = texture;
+                    symbol.symbolId = symbolId;
+                }
             }
         }
 
@@ -168,12 +183,11 @@ export class Reel extends Container {
 
         if (this.isSnapping) {
             let allAligned = true;
-            const totalHeight = this.symbolSize * this.symbols.length;
 
             for (const symbol of this.symbols) {
-
-                if (symbol.y < 0) symbol.y += totalHeight;
-                if (symbol.y >= totalHeight) symbol.y -= totalHeight;
+                // нормалізуємо в діапазон видимої зони з урахуванням буфера
+                if (symbol.y < -2 * this.symbolSize) symbol.y += totalHeight;
+                if (symbol.y >= this.reelHeight + this.symbolSize) symbol.y -= totalHeight;
 
                 const nearest = Math.round(symbol.y / this.symbolSize) * this.symbolSize;
                 const snapFactor = 15;
@@ -192,7 +206,6 @@ export class Reel extends Container {
                 this.isSpinning = false;
                 this.onStop?.();
             }
-            return
         }
     }
 
