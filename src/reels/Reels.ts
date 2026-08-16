@@ -87,7 +87,6 @@ export class Reel extends Container {
         return texture as Texture;
     }
 
-
     private getRandomSymbol(): SymbolDate {
         const index = Math.floor(this.rng.next() * this.symbolMap.length);
 
@@ -95,7 +94,7 @@ export class Reel extends Container {
     }
 
     private createSymbols(): void {
-        const total = 6; // 3 видимих + 2 буфер зверху + 1 знизу для плавності
+        const total = 6;
 
         for (let i = 0; i < total; i++) {
             const {id, texture} = this.getRandomSymbol();
@@ -104,7 +103,7 @@ export class Reel extends Container {
 
             sprite.width = this.symbolSize;
             sprite.height = this.symbolSize;
-            sprite.y = (i - 2) * this.symbolSize; // -2, -1, 0, 1, 2, 3
+            sprite.y = (i - 2) * this.symbolSize;
 
             sprite.symbolId = id;
 
@@ -151,22 +150,20 @@ export class Reel extends Container {
             for (const symbol of this.symbols) {
                 symbol.y += this.speed;
 
-                // recycling: символ вийшов за нижню межу видимої зони
                 if (symbol.y >= this.reelHeight + this.symbolSize) {
                     symbol.y -= totalHeight;
                 }
 
-                // міняємо текстуру тільки раз — коли символ повністю в буфері зверху
                 if (symbol.y <= -this.symbolSize && symbol.y > -this.symbolSize - this.speed - 1) {
                     let symbolId: string;
                     if (this.isSpinning && this.speed > 5) {
                         symbolId = this.getRandomSymbol().id;
-                    } else if (this.resultSymbols.length > 0) {  // ← перевірка
+                    } else if (this.resultSymbols.length > 0) {
                         const visibleIndex = Math.round(symbol.y / this.symbolSize);
                         const resultIndex = ((visibleIndex % this.resultSymbols.length) + this.resultSymbols.length) % this.resultSymbols.length;
                         symbolId = this.resultSymbols[resultIndex];
                     } else {
-                        symbolId = this.getRandomSymbol().id;  // ← fallback
+                        symbolId = this.getRandomSymbol().id;
                     }
 
                     const texture = this.getTexture(symbolId);
@@ -185,7 +182,6 @@ export class Reel extends Container {
             let allAligned = true;
 
             for (const symbol of this.symbols) {
-                // нормалізуємо в діапазон видимої зони з урахуванням буфера
                 if (symbol.y < -2 * this.symbolSize) symbol.y += totalHeight;
                 if (symbol.y >= this.reelHeight + this.symbolSize) symbol.y -= totalHeight;
 
